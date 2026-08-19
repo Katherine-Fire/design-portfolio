@@ -96,7 +96,7 @@ a {
 
 .project-gallery {
   display: grid;
-  gap: 24px;
+  gap: 0px;
   margin-top: 64px;
 }
 
@@ -111,4 +111,10 @@ a {
   border: 1px solid currentColor;
   border-radius: 999px;
   font-size: 12px;
+}
+
+.project-video {
+  display: block;
+  width: 100%;
+  height: auto;
 }

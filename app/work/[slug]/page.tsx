@@ -65,15 +65,27 @@ export default async function ProjectPage({
             </section>
 
             <section className="project-gallery">
-                {project.images.map((image) => (
-                    <Image
-                        key={image}
-                        src={image}
-                        alt=""
-                        width={1920}
-                        height={1080}
-                        className="project-image"
-                    />
+                {project.content.map((item) => (
+                    item.type === "image" ? (
+                        <Image
+                            key={item.src}
+                            src={item.src}
+                            alt=""
+                            width={1920}
+                            height={1080}
+                            className="project-image"
+                        />
+                    ) : (
+                        <video
+                            key={item.src}
+                            src={item.src}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="project-video"
+                        />
+                    )
                 ))}
             </section>
             <nav className="next-project">
