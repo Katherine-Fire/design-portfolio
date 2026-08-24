@@ -1,5 +1,6 @@
 export type Project = {
     slug: string;
+    titleZh: string;
     title: string;
     subtitle: string;
     year: string;
@@ -23,14 +24,15 @@ export type ProjectContent =
 export const projects: Project[] = [
     {//project A 通讯流
         slug: "ai-communication",
-        title: "AI Communication Experience",
+        titleZh: "AI 助手体验升级",
+        title: "AI ASSISTANT EXPERIENCE REDESIGN",
         subtitle: "AI-assisted communication flow for collaborative work.",
         description: "Exploring how AI assistance can improve communication efficiency inside an existing workflow.",
-        year: "2024",
+        year: "2024—2025",
         role: "Product Designer",
         platform: "Web Product",
         tags: ["AI", "Product Design", "Interaction"],
-        cover: "/projects/ai-communication/cover.webp",
+        cover: "/projects/ai-communication/Cover-v11.png",
         content: [
             {
                 type: "image",
@@ -58,32 +60,34 @@ export const projects: Project[] = [
 
     {//project B 直播
         slug: "live-room-redesign",
-        title: "Live Room Redesign",
+        titleZh: "Blued 直播间设计改版",
+        title: "BLUED LIVE EXPERIENCE REDESIGN",
         subtitle: "Redesigning the live room experience for clearer content presentation and more efficient interaction.",
         description:
             "A redesign of the core live room framework, focused on improving information hierarchy, content visibility, and the overall viewing experience.",
-        year: "2021–2023",
+        year: "2021—2023",
         role: "UI Designer",
         platform: "iOS / Android",
         tags: ["Live Streaming", "UI Design", "Interaction"],
-        cover: "/projects/live-room-redesign/Live-Room-Redesign-01.png",
+        cover: "/projects/live-room-redesign/Cover-v2.png",
         content: [
             { type: "image", src: "/projects/live-room-redesign/Live-Room-Redesign-01.png" },
         ],
     },
+
     {//Project C 直播PK优化
         slug: "live-pk-optimization",
-        title: "Live PK Experience Optimization",
+        titleZh: "直播 PK 体验优化",
+        title: "LIVE PK EXPERIENCE REDESIGN",
         subtitle:
             "Enhancing the PK experience through stronger immersion, competition, and game-like interaction.",
         description:
             "An optimization of the live PK experience focused on improving visual immersion, competitive atmosphere, and the overall sense of play.",
-        year: "2021–2023",
+        year: "2021—2023",
         role: "UI Designer",
         platform: "iOS / Android",
         tags: ["Live Streaming", "UI Design", "Gamification"],
-        cover:
-            "/projects/live-pk-optimization/Live-PK-Optimization-01.png",
+        cover: "/projects/live-pk-optimization/Cover-v31.png",
         content: [
             {
                 type: "image",
@@ -94,16 +98,17 @@ export const projects: Project[] = [
     },
     {//Project D 去中心化交易所
         slug: "decentralized-exchange",
-        title: "Decentralized Exchange",
+        titleZh: "去中心化交易所",
+        title: "DECENTRALIZED EXCHANGE",
         subtitle:
             "Designing a decentralized trading experience across Web and mobile.",
         description:
             "A UI design project for a decentralized exchange, covering core trading experiences across Web and mobile platforms.",
-        year: "2018–2020",
+        year: "2018—2020",
         role: "UI Designer",
         platform: "Web / App",
         tags: ["Web3", "Trading", "UI Design"],
-        cover: "/projects/decentralized-exchange/Dextop.png",
+        cover: "/projects/decentralized-exchange/Cover-v41.png",
         content: [
             {
                 type: "image",
@@ -113,17 +118,17 @@ export const projects: Project[] = [
     },
     {//Project E 活动运营
         slug: "campaign-operations",
-        title: "Campaign & Operations Design",
+        titleZh: "运营活动设计",
+        title: "CAMPAIGN & OPERATIONS DESIGN",
         subtitle:
             "A collection of interactive campaigns and visual experiences for user engagement.",
         description:
             "A selection of campaign and operations design work across interactive H5 experiences, engagement activities, and supporting visual assets.",
-        year: "2019–2023",
+        year: "2019—2023",
         role: "UI Designer",
         platform: "H5",
         tags: ["Campaign Design", "UI Design", "Visual Design"],
-        cover:
-            "/projects/campaign-operations/Campaign-Operations-01.png",
+        cover: "/projects/campaign-operations/Cover-v51.png",
         content: [
             {
                 type: "image",
