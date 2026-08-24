@@ -1,0 +1,79 @@
+.page {
+  min-height: 300svh;
+  color: rgba(238, 241, 248, 0.88);
+  background: #020306;
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+  background: #020306;
+}
+
+.hybridVisual,
+.staticArtwork,
+.artworkTreatment,
+.stage canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.hybridVisual { overflow: hidden; }
+
+.staticArtwork {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.artworkTreatment {
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 72% 48%, transparent 0 24%, rgba(2, 3, 8, 0.08) 52%, rgba(2, 3, 8, 0.34) 100%),
+    linear-gradient(90deg, rgba(2, 3, 8, 0.28), transparent 42%);
+}
+
+.stage canvas {
+  z-index: 2;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: pan-y;
+}
+
+.header,
+.caption {
+  position: absolute;
+  z-index: 3;
+  right: clamp(24px, 4vw, 64px);
+  left: clamp(24px, 4vw, 64px);
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  pointer-events: none;
+  font-size: 9px;
+  line-height: 1.4;
+  letter-spacing: 0.17em;
+}
+
+.header { top: 26px; align-items: center; }
+.header a { pointer-events: auto; transition: color 180ms ease; }
+.header a:hover, .header a:focus-visible { color: #fff; }
+.header a:focus-visible { outline: 1px solid rgba(226, 230, 255, 0.8); outline-offset: 6px; }
+.header p, .caption span { color: rgba(220, 226, 240, 0.5); }
+.caption { bottom: 28px; align-items: flex-end; }
+.caption span { text-align: right; }
+
+@media (max-width: 640px) {
+  .page { min-height: 240svh; }
+  .staticArtwork { object-position: 68% center; }
+  .header, .caption { right: 20px; left: 20px; font-size: 8px; letter-spacing: 0.12em; }
+  .header p { display: none; }
+  .caption { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .caption span { text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header a { transition: none; }
+}
