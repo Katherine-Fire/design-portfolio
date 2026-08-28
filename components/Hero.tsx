@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import HeroSpatialField from "./HeroSpatialField";
+
 export default function Hero() {
     const [phase, setPhase] = useState<
         "enter" | "welcome" | "statement"
@@ -83,7 +85,9 @@ export default function Hero() {
             </header>
 
             <section id="hero" className="hero">
-                <div className="hero-visual" aria-hidden="true" />
+                <div className="hero-visual" aria-hidden="true">
+                    <HeroSpatialField />
+                </div>
 
                 <div className="hero-content page-container">
                     <div
