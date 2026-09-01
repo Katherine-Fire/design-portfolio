@@ -2,13 +2,26 @@
 
 import { useEffect, useRef, useState } from "react";
 import { clock, effect, frame, frameLoop, init, surface } from "vgpu";
-import type { FrameLoopHandle } from "vgpu";
+import type { FrameLoopHandle, Texture } from "vgpu";
 
 import spatialFieldShader from "./spatial-field.wgsl";
 import styles from "./vgpu-field.module.css";
 
-const DISTORTION_STRENGTH = 0.16;
-const POINTER_DAMPING = 0.075;
+const LENS_FIELD = {
+  strength: 0.14,
+  radiusX: 165,
+  radiusY: 145,
+  coreRadius: 0.2,
+  bandPosition: 0.48,
+  bandWidth: 0.11,
+  outerFalloff: 0.14,
+  // -1 = inward gravitational bending; 1 = outward refraction.
+  direction: -1,
+  shearStrength: 0,
+  damping: 0.075,
+} as const;
+const DEBUG_FIELD = false;
+const PROJECT_TEXTURE_URL = "/projects/ai-communication/Cover-v11.png";
 
 type RenderStatus = "loading" | "ready" | "fallback";
 
@@ -20,6 +33,7 @@ function startSpatialField(
   let disposed = false;
   let loop: FrameLoopHandle | undefined;
   let gpu: Awaited<ReturnType<typeof init>> | undefined;
+  let projectTexture: Texture | undefined;
   let unsubscribeResize: (() => void) | undefined;
   const pointer = { x: 0.5, y: 0.5 };
   const smoothedPointer = { x: 0.5, y: 0.5 };
@@ -51,8 +65,34 @@ function startSpatialField(
         return;
       }
 
+      const projectImage = new Image();
+      projectImage.src = PROJECT_TEXTURE_URL;
+      await projectImage.decode();
+      if (disposed) {
+        gpu.dispose();
+        return;
+      }
+
+      projectTexture = gpu.device.createTexture({
+        label: "vgpu-diagnostic-project-image",
+        size: [projectImage.naturalWidth, projectImage.naturalHeight],
+        format: "rgba8unorm",
+        usage: ["copy_dst", "texture_binding", "render_attachment"],
+      });
+      gpu.gpu.queue.copyExternalImageToTexture(
+        { source: projectImage },
+        { texture: projectTexture.gpu },
+        { width: projectImage.naturalWidth, height: projectImage.naturalHeight },
+      );
+      const projectAspect = projectImage.naturalWidth / projectImage.naturalHeight;
+
       const canvasSurface = surface(gpu, canvas, { dpr: [1, 1.5] });
       const fieldClock = clock(gpu);
+      const lensRadii = () => {
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        return [LENS_FIELD.radiusX * dpr, LENS_FIELD.radiusY * dpr] as const;
+      };
+      const [radiusX, radiusY] = lensRadii();
       const spatialField = effect(gpu, spatialFieldShader, {
         label: "vgpu-pointer-spatial-field",
         set: {
@@ -60,8 +100,19 @@ function startSpatialField(
             resolution: canvasSurface.size,
             pointer: [0.5, 0.5],
             time: 0,
-            strength: reduceMotion ? 0 : DISTORTION_STRENGTH,
+            strength: reduceMotion ? 0 : LENS_FIELD.strength,
+            radiusX,
+            radiusY,
+            coreRadius: LENS_FIELD.coreRadius,
+            bandPosition: LENS_FIELD.bandPosition,
+            bandWidth: LENS_FIELD.bandWidth,
+            outerFalloff: LENS_FIELD.outerFalloff,
+            direction: LENS_FIELD.direction,
+            shearStrength: LENS_FIELD.shearStrength,
+            projectAspect,
+            debugField: DEBUG_FIELD ? 1 : 0,
           },
+          projectImage: projectTexture,
         },
       });
 
@@ -75,7 +126,14 @@ function startSpatialField(
       };
 
       unsubscribeResize = canvasSurface.onResize(({ width, height }) => {
-        spatialField.set({ params: { resolution: [width, height] } });
+        const [nextRadiusX, nextRadiusY] = lensRadii();
+        spatialField.set({
+          params: {
+            resolution: [width, height],
+            radiusX: nextRadiusX,
+            radiusY: nextRadiusY,
+          },
+        });
       });
 
       if (reduceMotion) {
@@ -87,8 +145,8 @@ function startSpatialField(
       } else {
         let hasRendered = false;
         loop = frameLoop(gpu, (frame) => {
-          smoothedPointer.x += (pointer.x - smoothedPointer.x) * POINTER_DAMPING;
-          smoothedPointer.y += (pointer.y - smoothedPointer.y) * POINTER_DAMPING;
+          smoothedPointer.x += (pointer.x - smoothedPointer.x) * LENS_FIELD.damping;
+          smoothedPointer.y += (pointer.y - smoothedPointer.y) * LENS_FIELD.damping;
           prepareFrame(fieldClock.time);
           frame.pass(canvasSurface, spatialField);
           if (!hasRendered) {
@@ -102,6 +160,8 @@ function startSpatialField(
       onStatusChange("fallback");
       loop?.stop();
       unsubscribeResize?.();
+      projectTexture?.dispose();
+      projectTexture = undefined;
       gpu?.dispose();
       gpu = undefined;
     }
@@ -113,6 +173,7 @@ function startSpatialField(
     canvas.removeEventListener("pointerleave", resetPointer);
     loop?.stop();
     unsubscribeResize?.();
+    projectTexture?.dispose();
     gpu?.dispose();
   };
 }

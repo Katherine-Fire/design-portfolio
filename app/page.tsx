@@ -4,6 +4,7 @@ import type { ProjectCardVariant } from "../components/ProjectCard";
 import Hero from "../components/Hero";
 import Image from "next/image";
 import ContactSection from "../components/ContactSection";
+import HomeScrollStage from "../components/HomeScrollStage";
 
 const projectVariants: ProjectCardVariant[] = [
   "featured",
@@ -51,7 +52,30 @@ const profileCards = [
 export default function Home() {
   return (
     <main>
-      <Hero />
+      <HomeScrollStage>
+        <Hero />
+
+        <section id="work" className="work-section">
+          <div className="work-section-inner page-container">
+            <h2 className="work-heading">
+              <span>SELECTED WORK</span>
+              <span className="work-heading-divider" aria-hidden="true">/</span>
+              <span lang="zh-CN">精选作品</span>
+            </h2>
+
+            <div className="work-grid">
+              {projects.map((project, index) => (
+                <ProjectCard
+                  key={project.slug}
+                  project={project}
+                  number={String(index + 1).padStart(2, "0")}
+                  variant={projectVariants[index] ?? "collection"}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      </HomeScrollStage>
 
       <section id="about" className="about-section">
         <div className="page-container about-layout">
@@ -83,7 +107,6 @@ export default function Home() {
                 </header>
 
                 <div className="about-profile-card-visual" aria-hidden="true">
-
                   <Image
                     src={card.visual}
                     alt=""
@@ -116,27 +139,6 @@ export default function Home() {
               <p className="about-meta-label">BEYOND DESIGN</p>
               <p>SCI-FI · TRAVEL · READING</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="work" className="work-section">
-        <div className="work-section-inner page-container">
-          <h2 className="work-heading">
-            <span>SELECTED WORK</span>
-            <span className="work-heading-divider" aria-hidden="true">/</span>
-            <span lang="zh-CN">精选作品</span>
-          </h2>
-
-          <div className="work-grid">
-            {projects.map((project, index) => (
-              <ProjectCard
-                key={project.slug}
-                project={project}
-                number={String(index + 1).padStart(2, "0")}
-                variant={projectVariants[index] ?? "collection"}
-              />
-            ))}
           </div>
         </div>
       </section>

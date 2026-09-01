@@ -1,0 +1,243 @@
+.page {
+  min-height: 100svh;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+}
+
+.shell {
+  width: min(calc(100% - var(--page-gutter) * 2), var(--page-max-width));
+  margin-inline: auto;
+  padding-block: clamp(32px, 4vw, 64px) clamp(72px, 9vw, 144px);
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.16em;
+}
+
+.brand,
+.homeLink {
+  transition: opacity 220ms ease;
+}
+
+.brand {
+  font-weight: 600;
+}
+
+.homeLink {
+  color: var(--color-text-secondary);
+}
+
+.brand:hover,
+.brand:focus-visible,
+.homeLink:hover,
+.homeLink:focus-visible {
+  opacity: 0.62;
+}
+
+.brand:focus-visible,
+.homeLink:focus-visible,
+.entryLink:focus-visible {
+  outline: 1px solid var(--color-focus-ring);
+  outline-offset: 8px;
+}
+
+.intro {
+  display: grid;
+  gap: clamp(20px, 2.5vw, 36px);
+  padding-block: clamp(112px, 15vw, 232px) clamp(80px, 10vw, 152px);
+}
+
+.title {
+  max-width: 8ch;
+  font-size: clamp(64px, 10vw, 156px);
+  font-weight: 400;
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+}
+
+.description {
+  max-width: 34rem;
+  color: var(--color-text-secondary);
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: 1.55;
+}
+
+.list {
+  border-top: 1px solid rgba(232, 234, 241, 0.16);
+  list-style: none;
+}
+
+.entry {
+  border-bottom: 1px solid rgba(232, 234, 241, 0.16);
+}
+
+.entryLink {
+  display: grid;
+  grid-template-columns: minmax(36px, 0.45fr) minmax(220px, 2fr) minmax(280px, 2.2fr) auto;
+  align-items: start;
+  gap: clamp(24px, 3vw, 56px);
+  padding-block: clamp(34px, 4vw, 60px);
+  transition: border-color 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.index,
+.status,
+.tech,
+.action {
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+}
+
+.index,
+.status,
+.tech {
+  color: var(--color-text-muted);
+}
+
+.identity {
+  display: grid;
+  gap: 12px;
+}
+
+.entryTitle {
+  font-size: clamp(22px, 2.25vw, 36px);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  text-transform: uppercase;
+}
+
+.techItem:not(:last-child)::after {
+  content: "·";
+  margin-left: 18px;
+  opacity: 0.5;
+}
+
+.detail {
+  display: grid;
+  gap: 20px;
+  max-width: 42rem;
+}
+
+.entryDescription {
+  color: var(--color-text-secondary);
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.6;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.actionLine {
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left center;
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.entryLink:hover .entryTitle,
+.entryLink:focus-visible .entryTitle {
+  transform: translateX(6px);
+}
+
+.entryLink:hover .action,
+.entryLink:focus-visible .action {
+  color: var(--color-text-primary);
+}
+
+.entryLink:hover .actionLine,
+.entryLink:focus-visible .actionLine {
+  transform: scaleX(1.45);
+}
+
+@media (max-width: 900px) {
+  .entryLink {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+  }
+
+  .detail {
+    grid-column: 2 / -1;
+  }
+
+  .status {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    padding-top: 28px;
+  }
+
+  .navigation {
+    font-size: 10px;
+  }
+
+  .intro {
+    padding-block: 104px 72px;
+  }
+
+  .title {
+    font-size: clamp(58px, 23vw, 92px);
+  }
+
+  .entryLink {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 16px;
+    padding-block: 34px;
+  }
+
+  .identity,
+  .detail,
+  .status {
+    grid-column: 2;
+  }
+
+  .status {
+    grid-row: auto;
+  }
+
+  .detail {
+    gap: 16px;
+  }
+
+  .action {
+    margin-top: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand,
+  .homeLink,
+  .entryTitle,
+  .actionLine {
+    transition-duration: 0.01ms;
+  }
+
+  .entryLink:hover .entryTitle,
+  .entryLink:focus-visible .entryTitle {
+    transform: none;
+  }
+}

@@ -76,7 +76,7 @@ export default function Hero() {
 
                     <nav className="hero-nav-links" aria-label="Primary navigation">
                         <a href="#work">WORK</a>
-                        <a href="#lab">LAB</a>
+                        <a href="/lab">LAB</a>
                         <a href="#about">ABOUT</a>
                         <a href="/resume">RESUME</a>
                         <a href="#contact">CONTACT</a>

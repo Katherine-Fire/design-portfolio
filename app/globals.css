@@ -145,6 +145,47 @@ a {
   background: var(--color-bg-section);
 }
 
+.home-scroll-stage {
+  --home-hero-copy-y: 0px;
+  --home-hero-copy-opacity: 1;
+  --home-work-entry: 1;
+  --home-work-y: 0px;
+  --home-project-entry: 1;
+  --home-project-y: 0px;
+  --home-hero-visual-opacity: 1;
+  --home-hero-visual-brightness: 1;
+  position: relative;
+  background: var(--color-bg);
+}
+
+.home-scroll-stage .hero {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+}
+
+.home-scroll-stage .work-section {
+  position: relative;
+  z-index: 3;
+}
+
+.home-scroll-stage.is-scroll-enhanced .work-section {
+  padding-top: calc(clamp(112px, 13vw, 200px) + 50svh);
+  background: transparent;
+}
+
+.home-scroll-stage.is-scroll-enhanced .work-heading {
+  opacity: var(--home-work-entry);
+  transform: translate3d(0, var(--home-work-y), 0);
+  will-change: transform, opacity;
+}
+
+.home-scroll-stage.is-scroll-enhanced .project-card:first-child {
+  opacity: var(--home-project-entry);
+  transform: translate3d(0, var(--home-project-y), 0);
+  will-change: transform, opacity;
+}
+
 .work-heading {
   display: flex;
   align-items: baseline;
@@ -292,6 +333,10 @@ a {
 }
 
 @media (max-width: 760px) {
+  .home-scroll-stage.is-scroll-enhanced .work-section {
+    padding-top: calc(96px + 32svh);
+  }
+
   .work-section {
     padding-block: 96px;
   }
@@ -381,6 +426,12 @@ a {
   overflow: hidden;
   pointer-events: none;
   background: var(--color-bg);
+}
+
+.home-scroll-stage.is-scroll-enhanced .hero-visual {
+  opacity: var(--home-hero-visual-opacity);
+  filter: brightness(var(--home-hero-visual-brightness));
+  will-change: opacity, filter;
 }
 
 .hero-spatial-field::before,
@@ -548,8 +599,13 @@ a {
   display: grid;
   place-items: center;
   text-align: center;
-  transform: translate3d(var(--hero-space-x), var(--hero-space-y), 0);
-  will-change: transform;
+  transform: translate3d(
+    var(--hero-space-x),
+    calc(var(--hero-space-y) + var(--home-hero-copy-y, 0px)),
+    0
+  );
+  opacity: var(--home-hero-copy-opacity, 1);
+  will-change: transform, opacity;
 }
 
 .hero-phase {
@@ -643,6 +699,10 @@ a {
   line-height: 1;
   letter-spacing: 0.22em;
   transform: translateX(-50%);
+}
+
+.home-scroll-stage.is-scroll-enhanced .hero-scroll {
+  opacity: var(--home-hero-copy-opacity);
 }
 
 .hero-scroll-line {
@@ -781,6 +841,23 @@ a {
   }
 
   .hero-content {
+    transform: none;
+    will-change: auto;
+  }
+
+  .home-scroll-stage .hero {
+    position: relative;
+  }
+
+  .home-scroll-stage .work-section {
+    background: var(--color-bg-section);
+  }
+
+  .home-scroll-stage .hero-visual,
+  .home-scroll-stage .work-heading,
+  .home-scroll-stage .project-card:first-child {
+    opacity: 1;
+    filter: none;
     transform: none;
     will-change: auto;
   }
