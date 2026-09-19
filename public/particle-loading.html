@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Interactive Particle Ring</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #02050A; }
+    body { min-height: 100svh; display: grid; place-items: center; color: #bdbdbd;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    ::selection { background: #ddd; color: #000; }
+    .loader { position: fixed; inset: 0; }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  </style>
+</head>
+<body>
+  <main class="loader" aria-label="交互粒子环">
+    <canvas id="ring" width="400" height="400" role="img" aria-label="白色与浅金色星尘环呼吸，亮球穿梭吸附成核，缩小消隐后爆散，星尘持续流动重组成环；鼠标或手指可扰动粒子"></canvas>
+    <noscript>请启用 JavaScript 以显示粒子动画。</noscript>
+  </main>
+  <script>
+    (() => {
+      'use strict';
+      // 10s：两次各 2s 的呼吸 → .875s 吸附 → .8s 连续放大/缩隐 → 爆散与回流重叠。
+      // 随机参数只在初始化生成；运动由绝对相位求解，循环无累计误差。
+      const CONFIG = { particles: 9000, size: 280, radius: 57, thickness: 14,
+        loopSeconds: 10, pointerRadius: 33 };
+      const PLAYBACK_RATE = 1.25;
+      const TIMING = { breath: 2, intake: 4, captured: 4.875, release: 5.675 };
+      const LOADER_MODE = new URLSearchParams(location.search).get('mode') === 'loader';
+      const LOADER_BURST_FADE_SECONDS = .78;
+      const LOADER_FADE_END_SECONDS = TIMING.release + LOADER_BURST_FADE_SECONDS;
+      const EVENT_SECONDS = 5; // 吸附阶段的相位速度；停核时间独立控制。
+      const canvas = document.getElementById('ring');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      const TAU = Math.PI * 2;
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+      let seed = 9137;
+      const random = () => {
+        seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
+        return (seed + 1) / 4294967297;
+      };
+      const gaussian = () => Math.sqrt(-2 * Math.log(random())) * Math.cos(TAU * random());
+      const smooth = (a, b, value) => {
+        const x = Math.max(0, Math.min(1, (value - a) / (b - a)));
+        return x * x * x * (x * (x * 6 - 15) + 10);
+      };
+      const envelope = (a, b, c, d, t) => smooth(a, b, t) * (1 - smooth(c, d, t));
+      const easeOut = u => 1 - (1 - Math.max(0, Math.min(1, u))) ** 3;
+      function coreScale(hold) {
+        if (hold <= 0) return 1;
+        if (hold >= 1) return .06;
+        if (hold < .25) return 1 + .8 * easeOut(hold / .25);
+        return 1.8 - 1.74 * easeOut((hold - .25) / .75);
+      }
+      // 预计算阻尼弹簧追逐：急加速、越过目标、反向捕获、衰减回弹。
+      // 每帧只查表，所有粒子共享同一条连续轨迹，不卡顿、不累计漂移。
+      const ballPath = [];
+      const waypoints = [
+        { t:.20, x:-82, y:25 }, { t:.205, x:43, y:-43 },
+        { t:.251, x:-38, y:31 }, { t:.291, x:35, y:20 },
+        { t:.327, x:-10, y:-13 }, { t:.350, x:0, y:0 }
+      ];
+      let bx = -82, by = 25, bvx = 0, bvy = 0;
+      const pathSteps = 360, pathDt = .22 * EVENT_SECONDS / pathSteps;
+      for (let i = 0; i <= pathSteps; i++) {
+        const t = .20 + .22 * i / pathSteps;
+        let target = waypoints[0];
+        for (let j = 1; j < waypoints.length; j++) {
+          if (t < waypoints[j].t) break;
+          const blend = smooth(waypoints[j].t, waypoints[j].t + .009, t);
+          target = { x: waypoints[j-1].x * (1-blend) + waypoints[j].x * blend,
+            y: waypoints[j-1].y * (1-blend) + waypoints[j].y * blend };
+        }
+        const settle = 1 - smooth(.375, .385, t);
+        ballPath.push({ x: bx * settle, y: by * settle });
+        bvx += ((target.x - bx) * 850 - bvx * 32) * pathDt;
+        bvy += ((target.y - by) * 850 - bvy * 32) * pathDt;
+        bx += bvx * pathDt; by += bvy * pathDt;
+      }
+      function ballAt(t) {
+        if (t <= .20) return ballPath[0];
+        if (t >= .42) return { x:0, y:0 };
+        const index = (t - .20) / .22 * pathSteps;
+        const i = Math.min(pathSteps-1, Math.floor(index)), u = index - i;
+        return { x: ballPath[i].x * (1-u) + ballPath[i+1].x * u,
+          y: ballPath[i].y * (1-u) + ballPath[i+1].y * u };
+      }
+      // 固定随机种子：每帧只做连续运动，不重新撒点，避免闪烁。
+      const particles = Array.from({ length: CONFIG.particles }, () => {
+        const layer = random();
+        const halo = layer < .09;
+        const inner = !halo && layer < .22;
+        return { angle: random() * TAU, spread: Math.max(-3, Math.min(3, gaussian())),
+          halo, inner, width: halo ? .65 : inner ? .6 : 1, phase: random() * TAU,
+          ox: 0, oy: 0, vx: 0, vy: 0,
+          size: .22 + Math.pow(random(), 2) * .43,
+          alpha: (halo ? .18 : inner ? .20 : .40) + random() * (halo || inner ? .25 : .45),
+          color: random() < .45 ? '#EBD8AE' : '#FFFFFF',
+          burstTurn: (random() - .5) * 2.3, burstRadius: 18 + Math.pow(random(), .65) * 112,
+          release: .42 + random() * .014, travel: .10 + random() * .075,
+          returnLead: .55 + random() * .20, returnEnd: .83 + random() * .15,
+          bend: 12 + random() * 23, lag: .006 + random() * .016,
+          coreRadius: Math.sqrt(random()) * 4.2 };
+      });
+      // 仅初始化时寻找亮球靠近每颗粒子的时刻，避免逐帧搜索。
+      for (const p of particles) {
+        p.returnStart = p.release + p.travel * p.returnLead;
+        const r = CONFIG.radius + (p.halo ? 22 : p.inner ? -17 : 0) + p.spread * CONFIG.thickness * p.width * .88;
+        const x = Math.cos(p.angle) * r, y = Math.sin(p.angle) * r;
+        let closest = Infinity;
+        for (let i = 0; i <= 40; i++) {
+          const t = .205 + i / 40 * .12, ball = ballAt(t);
+          const distance = (x - ball.x) ** 2 + (y - ball.y) ** 2;
+          if (distance < closest) { closest = distance; p.capture = t; }
+        }
+        p.capture = Math.min(.325, p.capture + Math.min(.025, Math.sqrt(closest) * .00025));
+        p.captureEnd = Math.min(.375, p.capture + .047 + Math.min(.035, Math.sqrt(closest) * .0004));
+      }
+      let frame = 0, elapsed = 0, last = null;
+      let loaderReadyAnnounced = false, burstAnnounced = false;
+      let releaseRequested = !LOADER_MODE;
+      let width = 0, height = 0, scale = 1;
+      let previousPointer = null;
+      const strokes = [];
+      function pointerMove(event) {
+        const rect = canvas.getBoundingClientRect();
+        const point = { x: (event.clientX - rect.left - width / 2) / scale,
+          y: (event.clientY - rect.top - height / 2) / scale, time: event.timeStamp };
+        const from = previousPointer && point.time - previousPointer.time < 120 ? previousPointer : point;
+        const dx = point.x - from.x, dy = point.y - from.y;
+        const distance = Math.hypot(dx, dy);
+        strokes.push({ x: from.x, y: from.y, dx, dy,
+          power: Math.min(180, 29 + distance * 2.65) });
+        if (strokes.length > 16) strokes.shift();
+        previousPointer = point;
+      }
+      function clearPointer() { previousPointer = null; }
+      canvas.addEventListener('pointermove', pointerMove);
+      canvas.addEventListener('pointerdown', pointerMove);
+      canvas.addEventListener('pointerleave', clearPointer);
+      canvas.addEventListener('pointerup', clearPointer);
+      canvas.addEventListener('pointercancel', clearPointer);
+      window.addEventListener('blur', () => { clearPointer(); strokes.length = 0; });
+      window.addEventListener('message', event => {
+        if (event.origin !== location.origin) return;
+        if (event.data?.type === 'portfolio:particle-release') releaseRequested = true;
+      });
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        width = rect.width; height = rect.height;
+        scale = Math.min(CONFIG.size / 200, width / 260, height / 260);
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        clearPointer(); strokes.length = 0;
+        draw(elapsed);
+      }
+      function draw(seconds, dt = 0) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const pixelScale = canvas.width / Math.max(width, 1);
+        ctx.setTransform(pixelScale * scale, 0, 0, pixelScale * scale, canvas.width / 2, canvas.height / 2);
+        const cycle = reduced.matches ? 0 : (seconds % CONFIG.loopSeconds) / CONFIG.loopSeconds;
+        const localSeconds = cycle * CONFIG.loopSeconds;
+        if (LOADER_MODE && releaseRequested && !burstAnnounced && localSeconds >= TIMING.release) {
+          burstAnnounced = true;
+          parent.postMessage({ type: 'portfolio:particle-burst' }, location.origin);
+        }
+        const t = localSeconds < TIMING.intake ? .20 * localSeconds / TIMING.intake
+          : localSeconds < TIMING.captured ? .20 + (localSeconds - TIMING.intake) / EVENT_SECONDS
+          : localSeconds < TIMING.release ? .375 + .045 * (localSeconds - TIMING.captured) / .8
+          : .42 + .58 * (localSeconds - TIMING.release) / (CONFIG.loopSeconds - TIMING.release);
+        const phase = cycle * TAU;
+        // 每 2 秒一次完整呼吸；未被吸附的粒子继续随环呼吸。
+        const breath = Math.sin(Math.PI * localSeconds / TIMING.breath) ** 2;
+        const hold = Math.max(0, Math.min(1, (localSeconds - TIMING.captured) / .8));
+        // 800ms 连续动作：200ms 放大，立即进入 600ms 缩小与消隐，无停留段。
+        const coreElastic = coreScale(hold);
+        const coreFade = smooth(.60, 1, hold);
+        // 两次呼吸 → 亮球吸附 → 缩隐 → 爆散时已开始分批回流。
+        const ball = ballAt(t);
+        const beforeBall = ballAt(t - .001), afterBall = ballAt(t + .001);
+        const ballVX = (afterBall.x - beforeBall.x) / (.002 * EVENT_SECONDS);
+        const ballVY = (afterBall.y - beforeBall.y) / (.002 * EVENT_SECONDS);
+        const ballSpeed = Math.hypot(ballVX, ballVY);
+        const ballHeading = Math.atan2(ballVY, ballVX);
+        // Loader mode turns the explosion into the page transition. The parent
+        // overlay supplies the final 100% → 0% dissolve, while this canvas keeps
+        // the outward particles legible throughout that crossfade.
+        const loaderBurstProgress = LOADER_MODE
+          ? smooth(TIMING.release, LOADER_FADE_END_SECONDS, localSeconds)
+          : 0;
+        const loaderBurstSpread = 1 + 1.1 * loaderBurstProgress;
+        const loaderBurstAlphaBoost = 1 + .6 * loaderBurstProgress;
+        const loaderOpacity = LOADER_MODE
+          ? 1 - smooth(TIMING.release + .12, LOADER_FADE_END_SECONDS, localSeconds)
+          : 1;
+        const ballAlpha = smooth(.20, .211, t) * (1 - coreFade) * loaderOpacity;
+        const compression = envelope(.345, .385, .42, .46, t);
+        const flash = envelope(.42, .426, .437, .47, t);
+        const steps = Math.max(1, Math.ceil(dt / (1 / 120))), step = dt / steps;
+        const damping = Math.exp(-4.8 * step);
+        for (const p of particles) {
+          const angle = p.angle + .025 * Math.sin(phase) + .012 * Math.sin(phase + p.phase);
+          const layerOffset = p.halo ? 22 : p.inner ? -17 : 0;
+          const radius = Math.max(14, CONFIG.radius + 2 * breath + layerOffset
+            + p.spread * CONFIG.thickness * p.width * (.88 + .06 * breath)
+            + .55 * Math.sin(p.angle * 3 + phase)
+            + .5 * Math.cos(phase + p.phase));
+          const ringX = Math.cos(angle) * radius, ringY = Math.sin(angle) * radius;
+          const capture = smooth(p.capture, p.captureEnd, t);
+          const coreX = Math.cos(p.phase) * p.coreRadius * coreElastic;
+          const coreY = Math.sin(p.phase) * p.coreRadius * coreElastic;
+          // 接近亮球的粒子先响应，沿切向弯曲轨迹卷入；末端消除滞后。
+          const target = capture > 0 && capture < 1 ? ballAt(t - p.lag * Math.sin(Math.PI * capture)) : ball;
+          const curl = Math.sin(Math.PI * capture) ** 2 * p.bend;
+          let homeX = ringX * (1 - capture) + (target.x + coreX) * capture - Math.sin(angle) * curl;
+          let homeY = ringY * (1 - capture) + (target.y + coreY) * capture + Math.cos(angle) * curl;
+          const u = Math.max(0, (t - p.release) / p.travel);
+          // 不截断速度：外扩持续衰减，回流在扩散尚未结束时接管。
+          const burst = (1 - Math.exp(-3 * u)) * smooth(0, .065, u);
+          const reform = smooth(p.returnStart, p.returnEnd, t);
+          if (t >= .42) {
+            // 不同初速度、少量切向惯性；重组时轨道逐渐建立。
+            const drift = (t - p.release) * (.45 + .35 * Math.sin(p.phase));
+            const cloudAngle = p.angle + (p.burstTurn + drift) * (1 - reform) + .13 * Math.sin(Math.PI * burst);
+            const cloudX = Math.cos(cloudAngle) * p.burstRadius * loaderBurstSpread;
+            const cloudY = Math.sin(cloudAngle) * p.burstRadius * .86 * loaderBurstSpread;
+            homeX = (coreX * (1 - burst) + cloudX * burst) * (1 - reform) + ringX * reform;
+            homeY = (coreY * (1 - burst) + cloudY * burst) * (1 - reform) + ringY * reform;
+          }
+          const compact = capture * (1 - burst) * (1 - reform);
+          // 按鼠标扫过的线段施力，快速划过也能击中粒子。
+          for (const stroke of strokes) {
+            const length2 = stroke.dx * stroke.dx + stroke.dy * stroke.dy;
+            const fraction = length2 ? Math.max(0, Math.min(1,
+              ((homeX + p.ox - stroke.x) * stroke.dx + (homeY + p.oy - stroke.y) * stroke.dy) / length2)) : 0;
+            const dx = homeX + p.ox - stroke.x - fraction * stroke.dx;
+            const dy = homeY + p.oy - stroke.y - fraction * stroke.dy;
+            const distance = Math.hypot(dx, dy);
+            if (distance < CONFIG.pointerRadius) {
+              const force = Math.pow(1 - distance / CONFIG.pointerRadius, 2)
+                * stroke.power * (reduced.matches ? .15 : 1);
+              const length = Math.sqrt(length2) || 1;
+              p.vx += ((distance > .01 ? dx / distance : Math.cos(p.phase)) + .55 * stroke.dx / length) * force;
+              p.vy += ((distance > .01 ? dy / distance : Math.sin(p.phase)) + .55 * stroke.dy / length) * force;
+            }
+          }
+          const speed = Math.hypot(p.vx, p.vy);
+          if (speed > 265) { p.vx *= 265 / speed; p.vy *= 265 / speed; }
+          // 小时间步的弹簧与阻尼让粒子散开后自然归位。
+          for (let i = 0; i < steps; i++) {
+            p.vx = (p.vx - p.ox * 11 * step) * damping;
+            p.vy = (p.vy - p.oy * 11 * step) * damping;
+            p.ox += p.vx * step; p.oy += p.vy * step;
+          }
+          const x = homeX + p.ox * (1 - compact), y = homeY + p.oy * (1 - compact);
+          // 光照固定在左上方，保留参考图上密下疏的视觉层次。
+          const lighting = (.60 + .40 * Math.pow((1 - Math.sin(angle + .25)) / 2, 1.3))
+            * (.85 + .15 * Math.sin(p.angle * 3 + .4) ** 2);
+          ctx.fillStyle = p.color;
+          // 聚合时减小每颗粒子的透明度，避免九千颗叠加过曝。
+          ctx.globalAlpha = p.alpha * lighting * (.90 + .06 * breath)
+            * (1 - .982 * compact) * (1 - compact * coreFade)
+            * (1 - .25 * burst * (1 - reform)) * (1 + .18 * flash)
+            * loaderBurstAlphaBoost;
+          ctx.beginPath();
+          ctx.arc(x, y, p.size, 0, TAU);
+          ctx.fill();
+        }
+        if (ballAlpha > 0) {
+          // 短尾迹采样过去 46ms；拉伸跟随速度，停核时短促挤压回弹。
+          for (let i = 5; i >= 1; i--) {
+            const trail = ballAt(t - i * .0017);
+            ctx.globalAlpha = ballAlpha * (.14 - i * .022) * Math.min(1, ballSpeed / 80);
+            ctx.fillStyle = '#EBD8AE';
+            ctx.beginPath(); ctx.arc(trail.x, trail.y, 4.2 - i * .48, 0, TAU); ctx.fill();
+          }
+          const glowRadius = 23 * coreElastic;
+          const glow = ctx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, glowRadius);
+          glow.addColorStop(0, 'rgba(255,250,236,.65)');
+          glow.addColorStop(.25, 'rgba(235,216,174,.22)');
+          glow.addColorStop(1, 'rgba(235,216,174,0)');
+          ctx.globalAlpha = ballAlpha;
+          ctx.fillStyle = glow;
+          ctx.beginPath(); ctx.arc(ball.x, ball.y, glowRadius, 0, TAU); ctx.fill();
+          ctx.fillStyle = '#FFFDF7';
+          const rebound = .13 * Math.sin((t - .355) * 165) * envelope(.35, .36, .375, .385, t);
+          const stretch = 1 + Math.min(.52, ballSpeed / 1500) + rebound;
+          const ballRadius = (5.4 + 2.3 * compression + .7 * flash) * coreElastic;
+          ctx.beginPath();
+          ctx.ellipse(ball.x, ball.y, ballRadius * stretch, ballRadius / stretch, ballHeading, 0, TAU);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        strokes.length = 0;
+      }
+      function tick(now) {
+        const dt = last === null ? 0 : Math.min((now - last) / 1000, .05);
+        const nextElapsed = elapsed + dt * PLAYBACK_RATE;
+        if (LOADER_MODE && !releaseRequested) {
+          elapsed = Math.min(nextElapsed, TIMING.release);
+          if (elapsed >= TIMING.release && !loaderReadyAnnounced) {
+            loaderReadyAnnounced = true;
+            parent.postMessage({ type: 'portfolio:particle-ready' }, location.origin);
+          }
+        } else {
+          elapsed = LOADER_MODE ? Math.min(nextElapsed, LOADER_FADE_END_SECONDS) : nextElapsed;
+        }
+        last = now;
+        draw(elapsed, dt);
+        frame = requestAnimationFrame(tick);
+      }
+      function updatePlayback() {
+        cancelAnimationFrame(frame);
+        last = null;
+        clearPointer(); strokes.length = 0;
+        if (!document.hidden) frame = requestAnimationFrame(tick);
+      }
+      new ResizeObserver(resize).observe(canvas);
+      window.addEventListener('resize', resize);
+      document.addEventListener('visibilitychange', updatePlayback);
+      reduced.addEventListener('change', updatePlayback);
+      resize();
+      updatePlayback();
+    })();
+  </script>
+</body>
+</html>

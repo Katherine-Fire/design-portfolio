@@ -14,9 +14,9 @@ const navItems = [
 ] as const;
 
 const experiences = [
-  { period: "2024 — 2025", company: "Baidu Era Network Technology", role: "UI / Product Designer", description: "Designing product experiences across AI-assisted workflows, interface systems and interaction patterns, in close collaboration with product and engineering partners.", tags: ["Product Design", "AI Experience", "Interaction Design", "UI System"] },
-  { period: "2021 — 2023", company: "BlueCity", role: "UI Designer", description: "Created cross-platform social and live experiences with a focus on information hierarchy, interaction clarity and scalable interface patterns.", tags: ["Cross-platform", "UI Design", "Interaction", "Design System"] },
-  { period: "2018 — 2021", company: "Independent Design Practice", role: "UI / UX Designer", description: "Translated early product concepts into structured digital experiences, aligning visual direction with product requirements and technical constraints.", tags: ["Product Thinking", "UX Design", "Prototyping", "Collaboration"] },
+  { period: "2024.10 — 2025.12", company: "百度时代网络技术（北京）有限公司", role: "UI / Product Designer", description: "Designing product experiences across AI-assisted workflows, interface systems and interaction patterns, in close collaboration with product and engineering partners.", tags: ["Product Design", "AI Experience", "Interaction Design", "UI System"] },
+  { period: "2020.12 — 2023.12", company: "北京蓝城兄弟文化传媒有限公司", role: "UI Designer", description: "Created cross-platform social and live experiences with a focus on information hierarchy, interaction clarity and scalable interface patterns.", tags: ["Cross-platform", "UI Design", "Interaction", "Design System"] },
+  { period: "2018.10 — 2020.05", company: "静帆科技", role: "UI / UX Designer", description: "Translated early product concepts into structured digital experiences, aligning visual direction with product requirements and technical constraints.", tags: ["Product Thinking", "UX Design", "Prototyping", "Collaboration"] },
 ];
 
 const skills = [
@@ -25,18 +25,7 @@ const skills = [
   ["MOTION", "After Effects · Interaction Prototyping"],
 ] as const;
 
-const selectedProjects = portfolioProjects.slice(0, 5).map((project) =>
-  project.slug === "campaign-operations"
-    ? {
-        ...project,
-        titleZh: "增长与活动体验设计",
-        title: "GROWTH & CAMPAIGN EXPERIENCE DESIGN",
-        description:
-          "围绕产品运营活动进行视觉与交互设计，包括活动页面、运营视觉、用户参与体验优化。",
-        tags: ["Product Design", "Campaign Design", "Visual Design"],
-      }
-    : project,
-);
+const selectedProjects = portfolioProjects;
 
 export default function ResumeContent() {
   const [activeSection, setActiveSection] = useState("about");
@@ -107,9 +96,10 @@ export default function ResumeContent() {
           <div className={styles.sidebarFooter}>
             <p>SOCIAL</p>
             <div className={styles.socials}>
-              <a href="#">LinkedIn</a><a href="#">Behance</a><a href="#">Dribbble</a><a href="mailto:name@email.com">Email</a>
+              <a href="mailto:cindykan2012@sina.com">Email</a>
+              <Link href="/#contact">WeChat</Link>
             </div>
-            <a className={styles.download} href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+            <a className={styles.download} href="/resume.pdf" download="Cindy-Kan-Resume.pdf">
               DOWNLOAD RESUME PDF <span aria-hidden="true">↗</span>
             </a>
           </div>

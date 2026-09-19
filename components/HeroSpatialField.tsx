@@ -10,8 +10,8 @@ const HERO_TEXTURE_POSITION_X = 0.5;
 const HERO_TEXTURE_POSITION_Y = 0.5;
 const HERO_PLANE_OVERSCAN = 1.18;
 const VIDEO_ZOOM_COMPENSATION = {
-  start: 0.8,
-  end: 0.8,
+  start: 1,
+  end: 1,
 } as const;
 
 const VIDEO_TRANSFORM = {
@@ -256,7 +256,14 @@ export default function HeroSpatialField() {
   const [motionPreference, setMotionPreference] = useState<"unknown" | "full" | "reduce">("unknown");
   const [isReady, setIsReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
-  const revealSpatialField = useCallback(() => setIsReady(true), []);
+  const announceHeroMediaReady = useCallback(() => {
+    document.documentElement.dataset.heroMediaReady = "true";
+    window.dispatchEvent(new Event("portfolio:hero-media-ready"));
+  }, []);
+  const revealSpatialField = useCallback(() => {
+    setIsReady(true);
+    announceHeroMediaReady();
+  }, [announceHeroMediaReady]);
   const useStaticFallback = useCallback(() => setVideoFailed(true), []);
 
   useEffect(() => {
@@ -309,6 +316,7 @@ export default function HeroSpatialField() {
           fill
           priority
           sizes="100vw"
+          onLoad={announceHeroMediaReady}
         />
       </div>
     );

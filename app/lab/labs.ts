@@ -9,6 +9,38 @@ export type LabEntry = {
 
 export const labs: readonly LabEntry[] = [
   {
+    index: "10",
+    title: "ASTRA SPACE HERO",
+    href: "/lab/astra-space-hero",
+    tech: ["Three.js", "GLB", "Static Lookdev"],
+    description: "Exported Blender scene, reconstructed lights and measured rendering performance.",
+    status: "ACTIVE",
+  },
+  {
+    index: "09",
+    title: "SCROLL VIDEO HERO",
+    href: "/lab/scroll-video-hero",
+    tech: ["HTML Video", "Native Scroll", "Timeline Scrub"],
+    description: "Scroll-position-controlled forward and reverse video timeline study.",
+    status: "ACTIVE",
+  },
+  {
+    index: "08",
+    title: "ASTRONAUT PREVIEW",
+    href: "/lab/astronaut-preview",
+    tech: ["Three.js", "R3F", "GLB QA"],
+    description: "Isolated geometry, material and silhouette inspection for the astronaut asset.",
+    status: "ACTIVE",
+  },
+  {
+    index: "07",
+    title: "SPACE NARRATIVE",
+    href: "/lab/space-narrative-test",
+    tech: ["Three.js", "GSAP", "Pointer Timeline"],
+    description: "Three.js + GSAP pointer-driven cinematic scene test.",
+    status: "ACTIVE",
+  },
+  {
     index: "01",
     title: "HERO LENS",
     href: "/lab/hero-lens",
@@ -46,6 +78,14 @@ export const labs: readonly LabEntry[] = [
     href: "/lab/black-hole",
     tech: ["WebGL", "R3F", "Hybrid Rendering"],
     description: "Cinematic artwork enhanced with a restrained real-time atmosphere layer.",
+    status: "ACTIVE",
+  },
+  {
+    index: "06",
+    title: "VIDEO HERO TEST",
+    href: "/lab/video-hero-test",
+    tech: ["HTML Video", "Hero Composition", "Responsive"],
+    description: "Original hero layout with alternate video background.",
     status: "ACTIVE",
   },
 ];

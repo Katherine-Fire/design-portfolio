@@ -21,7 +21,7 @@ const LENS_FIELD = {
   damping: 0.075,
 } as const;
 const DEBUG_FIELD = false;
-const PROJECT_TEXTURE_URL = "/projects/ai-communication/Cover-v11.png";
+const PROJECT_TEXTURE_URL = "/projects/ai-communication/Cover-v12.png";
 
 type RenderStatus = "loading" | "ready" | "fallback";
 

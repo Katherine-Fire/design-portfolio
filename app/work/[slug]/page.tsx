@@ -33,9 +33,22 @@ export default async function ProjectPage({
 
     return (
         <main className="project-page">
+            <nav className="project-page-nav" aria-label="Project navigation">
+                <Link className="project-return" href="/#work">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M14.5 5 7.5 12l7 7" />
+                        <path d="M8 12h10" />
+                    </svg>
+                    <span>返回作品</span>
+                </Link>
+
+                <Link className="project-home-link" href="/">
+                    CINDY KAN
+                </Link>
+            </nav>
+
             <header className="project-header">
                 <h1>{project.title}</h1>
-                <p>{project.subtitle}</p>
 
                 <dl className="project-meta">
                     <div>
@@ -53,16 +66,7 @@ export default async function ProjectPage({
                         <dd>{project.platform}</dd>
                     </div>
                 </dl>
-                <div className="project-tags">
-                    {project.tags.map((tag) => (
-                        <span key={tag}>{tag}</span>
-                    ))}
-                </div>
             </header>
-
-            <section className="project-intro">
-                <p>{project.description}</p>
-            </section>
 
             <section className="project-gallery">
                 {project.content.map((item) => (

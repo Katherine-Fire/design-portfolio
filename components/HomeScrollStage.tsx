@@ -22,6 +22,8 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
 
     const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const mobileLayout = window.matchMedia("(max-width: 760px)");
+    const workHeading = stage.querySelector<HTMLElement>(".work-heading");
+    const projectCard = stage.querySelector<HTMLElement>(".project-card");
     let frame = 0;
 
     const update = () => {
@@ -37,8 +39,15 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
       const progress = clamp01(-stageTop / choreographyDistance);
 
       const copyExit = smoothstep(0.08, mobileLayout.matches ? 0.26 : 0.3, progress);
-      const workEntry = smoothstep(mobileLayout.matches ? 0.22 : 0.3, mobileLayout.matches ? 0.4 : 0.46, progress);
-      const projectEntry = smoothstep(mobileLayout.matches ? 0.36 : 0.46, mobileLayout.matches ? 0.58 : 0.64, progress);
+      // Reveal against each element's layout position, excluding its animated offset.
+      const entryProgress = (element: HTMLElement | null) => {
+        if (!element) return 1;
+        const translation = new DOMMatrixReadOnly(getComputedStyle(element).transform).m42;
+        const top = element.getBoundingClientRect().top - translation;
+        return smoothstep(0.02, 0.24, 1 - top / window.innerHeight);
+      };
+      const workEntry = entryProgress(workHeading);
+      const projectEntry = entryProgress(projectCard);
       const visualExit = smoothstep(mobileLayout.matches ? 0.68 : 0.78, mobileLayout.matches ? 0.92 : 1, progress);
 
       stage.style.setProperty("--home-hero-copy-y", `${copyExit * -140}px`);

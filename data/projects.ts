@@ -32,15 +32,15 @@ export const projects: Project[] = [
         role: "Product Designer",
         platform: "Web Product",
         tags: ["AI", "Product Design", "Interaction"],
-        cover: "/projects/ai-communication/Cover-v11.png",
+        cover: "/projects/ai-communication/Cover-v12.png",
         content: [
             {
                 type: "image",
-                src: "/projects/ai-communication/AI-project-01.png",
+                src: "/projects/ai-communication/AI-project-01-v2.png",
             },
             {
                 type: "image",
-                src: "/projects/ai-communication/AI-project-02.png",
+                src: "/projects/ai-communication/AI-project-02-v2.png",
             },
             {
                 type: "image",
@@ -69,9 +69,9 @@ export const projects: Project[] = [
         role: "UI Designer",
         platform: "iOS / Android",
         tags: ["Live Streaming", "UI Design", "Interaction"],
-        cover: "/projects/live-room-redesign/Cover-v2.png",
+        cover: "/projects/live-room-redesign/Cover-v3.png",
         content: [
-            { type: "image", src: "/projects/live-room-redesign/Live-Room-Redesign-01.png" },
+            { type: "image", src: "/projects/live-room-redesign/Live-Room-Redesign-02.png" },
         ],
     },
 
@@ -87,16 +87,34 @@ export const projects: Project[] = [
         role: "UI Designer",
         platform: "iOS / Android",
         tags: ["Live Streaming", "UI Design", "Gamification"],
-        cover: "/projects/live-pk-optimization/Cover-v31.png",
+        cover: "/projects/live-pk-optimization/Cover-v32.png",
         content: [
             {
                 type: "image",
                 src:
-                    "/projects/live-pk-optimization/Live-PK-Optimization-01.png",
+                    "/projects/live-pk-optimization/Live-PK-Optimization-02.png",
             },
         ],
     },
-    {//Project D 去中心化交易所
+    {//Project D Coinpark 设计改版
+        slug: "coinpark-redesign",
+        titleZh: "Coinpark 设计改版",
+        title: "COINPARK REDESIGN",
+        subtitle: "项目内容整理中。",
+        description: "Coinpark 设计改版，项目封面与案例内容待补充。",
+        year: "2018-2020",
+        role: "UI Designer",
+        platform: "Web / App",
+        tags: ["UI Design"],
+        cover: "/projects/coinpark-redesign/coinpark-cover.png",
+        content: [
+            {
+                type: "image",
+                src: "/projects/coinpark-redesign/coinpark-1-3.png",
+            },
+        ],
+    },
+    {//Project E 去中心化交易所
         slug: "decentralized-exchange",
         titleZh: "去中心化交易所",
         title: "DECENTRALIZED EXCHANGE",
@@ -108,15 +126,27 @@ export const projects: Project[] = [
         role: "UI Designer",
         platform: "Web / App",
         tags: ["Web3", "Trading", "UI Design"],
-        cover: "/projects/decentralized-exchange/Cover-v41.png",
+        cover: "/projects/decentralized-exchange/Cover-v42.png",
         content: [
             {
                 type: "image",
-                src: "/projects/decentralized-exchange/Dextop.png",
+                src: "/projects/decentralized-exchange/d1.png",
+            },
+            {
+                type: "image",
+                src: "/projects/decentralized-exchange/d2.png",
+            },
+            {
+                type: "image",
+                src: "/projects/decentralized-exchange/d3.png",
+            },
+            {
+                type: "image",
+                src: "/projects/decentralized-exchange/d4.png",
             },
         ],
     },
-    {//Project E 活动运营
+    {//Project F 活动运营
         slug: "campaign-operations",
         titleZh: "运营活动设计",
         title: "CAMPAIGN & OPERATIONS DESIGN",
@@ -128,12 +158,12 @@ export const projects: Project[] = [
         role: "UI Designer",
         platform: "H5",
         tags: ["Campaign Design", "UI Design", "Visual Design"],
-        cover: "/projects/campaign-operations/Cover-v51.png",
+        cover: "/projects/campaign-operations/Cover-v52.png",
         content: [
             {
                 type: "image",
                 src:
-                    "/projects/campaign-operations/Campaign-Operations-01.png",
+                    "/projects/campaign-operations/Campaign-Operations-02.png",
             },
         ],
     },

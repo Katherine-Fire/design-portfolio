@@ -1,0 +1,256 @@
+.page {
+  min-height: 100svh;
+  color: var(--color-text-on-hero);
+  background: #000;
+}
+
+.hero {
+  --video-position-x: 50%;
+  --video-position-y: 50%;
+  --hero-focus-opacity-duration: 760ms;
+  --hero-focus-spatial-duration: 900ms;
+  --hero-focus-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --hero-focus-y-start: 10px;
+  --hero-focus-scale-start: 0.992;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 100vh;
+  min-height: 100svh;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding-block: 32px;
+  background: #000;
+}
+
+.container {
+  width: min(calc(100% - var(--page-gutter) * 2), var(--page-max-width));
+  margin-inline: auto;
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--video-position-x) var(--video-position-y);
+}
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 20;
+  padding-block: 22px;
+  color: var(--color-text-on-hero);
+}
+
+.nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand,
+.navLinks {
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.18em;
+}
+
+.brand {
+  flex: none;
+  font-weight: 600;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 3.2vw, 52px);
+}
+
+.nav a {
+  padding-block: 10px;
+  opacity: 0.72;
+  transition: opacity 180ms ease;
+}
+
+.nav a:hover,
+.nav a:focus-visible {
+  opacity: 1;
+}
+
+.nav a:focus-visible,
+.scroll:focus-visible {
+  outline: 1px solid var(--color-focus-ring);
+  outline-offset: 5px;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  min-height: 320px;
+  place-items: center;
+  text-align: center;
+}
+
+.phase {
+  grid-area: 1 / 1;
+  width: 100%;
+  transition:
+    opacity var(--hero-focus-opacity-duration) var(--hero-focus-ease),
+    transform var(--hero-focus-spatial-duration) var(--hero-focus-ease);
+}
+
+.pending,
+.exiting {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pending {
+  transform: translate3d(0, var(--hero-focus-y-start), 0) scale(var(--hero-focus-scale-start));
+}
+
+.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.welcome {
+  z-index: 2;
+  transition:
+    opacity var(--hero-focus-opacity-duration) var(--hero-focus-ease),
+    transform var(--hero-focus-spatial-duration) var(--hero-focus-ease),
+    filter 900ms var(--hero-focus-ease);
+}
+
+.welcome.pending {
+  filter: blur(8px);
+}
+
+.welcome.visible,
+.welcome.exiting {
+  filter: blur(0);
+}
+
+.welcome.exiting {
+  transform: translate3d(0, -8px, 0) scale(1.006);
+  transition-duration: 520ms, 620ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+.welcomeCopy {
+  font-size: 20px;
+  text-shadow:
+    0 2px 14px rgba(0, 0, 0, 0.34),
+    0 0 22px rgba(0, 0, 0, 0.12);
+}
+
+.statementWrap {
+  --hero-focus-spatial-duration: 1280ms;
+  --hero-focus-y-start: 8px;
+  --hero-focus-scale-start: 0.992;
+  z-index: 1;
+}
+
+.statement {
+  font-size: clamp(90px, 6vw, 96px);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  text-align: center;
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, 0.45),
+    0 0 30px rgba(0, 0, 0, 0.18);
+}
+
+.meta {
+  margin-top: 32px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.3);
+}
+
+.scroll {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  color: var(--color-text-hero-muted);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  transform: translateX(-50%);
+}
+
+.scrollLine {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, var(--color-hero-scroll-line), var(--color-hero-scroll-line-fade));
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-block: 24px;
+  }
+
+  .nav {
+    padding-block: 14px;
+  }
+
+  .nav .container {
+    align-items: flex-start;
+  }
+
+  .brand,
+  .navLinks {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+
+  .navLinks {
+    gap: 10px;
+  }
+
+  .content {
+    min-height: 280px;
+  }
+
+  .statement {
+    font-size: clamp(34px, 10vw, 56px);
+  }
+
+  .scroll {
+    bottom: 14px;
+  }
+
+  .scrollLine {
+    height: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phase {
+    transition-duration: 180ms;
+    transition-delay: 0ms;
+  }
+
+  .phase,
+  .visible,
+  .pending,
+  .exiting {
+    filter: none;
+    transform: none;
+  }
+
+  .nav a {
+    transition-duration: 0ms;
+  }
+}

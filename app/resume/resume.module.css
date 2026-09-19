@@ -1,4 +1,14 @@
-.page { min-height: 100svh; color: var(--color-text-primary); background: var(--color-bg); }
+.page {
+  min-height: 100svh;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  background-image: var(--resume-background-overlay), url("/resume/resume-background.png");
+  background-position: center top;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  transition: color 300ms ease, background-color 300ms ease;
+}
 .shell { width: min(calc(100% - var(--page-gutter) * 2), 1260px); margin-inline: auto; display: grid; grid-template-columns: minmax(300px, 35%) minmax(0, 65%); gap: clamp(72px, 8vw, 128px); align-items: start; }
 .sidebar { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; padding-block: clamp(40px, 6vw, 80px); }
 .back { display: inline-block; margin-bottom: clamp(64px, 8vh, 96px); color: var(--color-text-tertiary); font-size: 11px; line-height: 1; letter-spacing: .12em; transition: color 200ms ease; }
@@ -76,6 +86,7 @@
 }
 
 @media (max-width: 760px) {
+  .page { background-attachment: scroll; background-position: 42% top; }
   .shell { display: block; }
   .sidebar { position: static; height: auto; min-height: 100svh; padding-block: 32px 72px; }
   .back { margin-bottom: 72px; }
