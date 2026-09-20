@@ -53,3 +53,5 @@ public/lab/**/*.glb
 # Local review / design artifacts
 .impeccable/
 planet-1440x900.png
+.codex-dev.stderr.log
+.codex-dev.stdout.log

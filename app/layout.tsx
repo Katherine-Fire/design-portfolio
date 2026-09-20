@@ -21,18 +21,13 @@ export const metadata: Metadata = {
 };
 
 const themeInitScript = `
-  (function () {
+ (function () {
+    document.documentElement.dataset.theme = "dark";
+    document.documentElement.style.colorScheme = "dark";
+
     try {
-      var savedTheme = localStorage.getItem("portfolio-theme");
-      var theme = savedTheme === "light" || savedTheme === "dark"
-        ? savedTheme
-        : (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
-      document.documentElement.dataset.theme = theme;
-      document.documentElement.style.colorScheme = theme;
-    } catch (error) {
-      document.documentElement.dataset.theme = "dark";
-      document.documentElement.style.colorScheme = "dark";
-    }
+      localStorage.setItem("portfolio-theme", "dark");
+    } catch (error) {}
   })();
 `;
 
