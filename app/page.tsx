@@ -5,6 +5,7 @@ import ContactSection from "../components/ContactSection";
 import HomeScrollStage from "../components/HomeScrollStage";
 import AboutConceptCards from "../components/AboutConceptCards";
 import AboutPhotographyStream from "../components/AboutPhotographyStream";
+import HomeAboutIntro from "../components/HomeAboutIntro";
 
 type AboutVisualMode = "photography" | "concept";
 
@@ -31,10 +32,14 @@ export default function Home() {
           </div>
         </div>
 
+        <HomeAboutIntro />
+
         <section id="work" className="work-section">
           <div className="work-section-inner page-container">
             <header className="work-heading">
               <h2>SELECTED <span className="home-title-accent">WORK</span></h2>
+              <span className="work-heading-divider" aria-hidden="true">/</span>
+              <span lang="zh-CN">精选作品</span>
             </header>
 
             <div className="work-grid work-grid--three-column">

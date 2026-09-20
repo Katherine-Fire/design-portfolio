@@ -34,7 +34,7 @@ export default async function ProjectPage({
     return (
         <main className="project-page">
             <nav className="project-page-nav" aria-label="Project navigation">
-                <Link className="project-return" href="/#work">
+                <Link className="project-return" href="/#hero">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M14.5 5 7.5 12l7 7" />
                         <path d="M8 12h10" />
@@ -42,7 +42,7 @@ export default async function ProjectPage({
                     <span>返回作品</span>
                 </Link>
 
-                <Link className="project-home-link" href="/">
+                <Link className="project-home-link" href="/#hero">
                     CINDY KAN
                 </Link>
             </nav>

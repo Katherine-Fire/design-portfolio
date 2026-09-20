@@ -17,6 +17,34 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
   const stageRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    const resetScrollPosition = () => {
+      window.scrollTo(0, 0);
+    };
+
+    resetScrollPosition();
+
+    let secondFrame = 0;
+    const firstFrame = window.requestAnimationFrame(() => {
+      resetScrollPosition();
+      secondFrame = window.requestAnimationFrame(resetScrollPosition);
+    });
+
+    window.addEventListener("pageshow", resetScrollPosition);
+    window.addEventListener("beforeunload", resetScrollPosition);
+
+    return () => {
+      window.removeEventListener("pageshow", resetScrollPosition);
+      window.removeEventListener("beforeunload", resetScrollPosition);
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
 

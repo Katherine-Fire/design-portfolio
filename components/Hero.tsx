@@ -7,18 +7,20 @@ import HeroSpatialField from "./HeroSpatialField";
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
-  const [phase, setPhase] = useState<"enter" | "welcome" | "statement">("enter");
+  const [isTextReady, setIsTextReady] = useState(false);
   const [isBeyondHero, setIsBeyondHero] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
   useEffect(() => {
-    const showWelcome = window.setTimeout(() => setPhase("welcome"), 100);
-    const showStatement = window.setTimeout(() => setPhase("statement"), 1800);
+    let secondFrame = 0;
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => setIsTextReady(true));
+    });
 
     return () => {
-      window.clearTimeout(showWelcome);
-      window.clearTimeout(showStatement);
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
     };
   }, []);
 
@@ -176,34 +178,24 @@ export default function Hero() {
         <div className="hero-reflection" aria-hidden="true" />
 
         <div className="hero-content page-container">
-          <div
-            className={`hero-phase hero-welcome ${phase === "enter" ? "is-pending" : "is-visible"
-              }`}
-            aria-hidden={phase === "enter"}
-          >
+          <div className={`hero-phase hero-welcome ${isTextReady ? "is-visible" : "is-pending"}`}>
             <p className="hero-eyebrow">PRODUCT DESIGN / AI / INTERACTION</p>
-            <div
-              className={`hero-statement-wrap ${phase === "statement" ? "is-visible" : "is-pending"}`}
-              aria-hidden={phase !== "statement"}
-            >
+            <div className={`hero-statement-wrap ${isTextReady ? "is-visible" : "is-pending"}`}>
               <h1 className="hero-statement hero-focus-copy">
-                <span
-                  className="hero-statement-line hero-statement-line--lead"
-                  data-text="DESIGN"
-                >
-                  DESIGN
+                <span className="hero-statement-mask">
+                  <span className="hero-statement-line hero-statement-line--lead">
+                    WELCOME
+                  </span>
                 </span>
-                <span
-                  className="hero-statement-line hero-statement-line--support"
-                  data-text="MY SPACE"
-                >
-                  MY <span className="home-title-accent"> SPACE</span>
+                <span className="hero-statement-mask">
+                  <span className="hero-statement-line hero-statement-line--support">
+                    TO MY <span className="home-title-accent"> SPACE</span>
+                  </span>
                 </span>
-                <span
-                  className="hero-statement-line hero-statement-line--support"
-                  data-text="CINDY K."
-                >
-                  CINDY K.
+                <span className="hero-statement-mask">
+                  <span className="hero-statement-line hero-statement-line--support">
+                    CINDY K.
+                  </span>
                 </span>
               </h1>
               <p className="hero-meta hero-supporting">关注产品体验、AI 交互与新的数字体验方式。</p>

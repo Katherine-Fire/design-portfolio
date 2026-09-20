@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
-const HERO_VIDEO_URL = "/hero/hero-motion.mp4";
+const HERO_VIDEO_URL = "/hero/hero-motion-web.mp4";
 const HERO_TEXTURE_POSITION_X = 0.5;
 const HERO_TEXTURE_POSITION_Y = 0.5;
 const HERO_PLANE_OVERSCAN = 1.18;
@@ -29,10 +29,12 @@ type SpatialShader = Parameters<THREE.MeshBasicMaterial["onBeforeCompile"]>[0];
 function HeroArtworkMesh({
   pointer,
   onReady,
+  onMediaReady,
   onVideoError,
 }: {
   pointer: React.RefObject<THREE.Vector2>;
   onReady: () => void;
+  onMediaReady: () => void;
   onVideoError: () => void;
 }) {
   const [videoTexture, setVideoTexture] = useState<THREE.VideoTexture | null>(null);
@@ -94,6 +96,7 @@ function HeroArtworkMesh({
     const video = document.createElement("video");
     let texture: THREE.VideoTexture | null = null;
     let cancelled = false;
+    let mediaReadyAnnounced = false;
     const fallbackTimer = window.setTimeout(() => {
       if (!cancelled) onVideoError();
     }, 8000);
@@ -107,10 +110,24 @@ function HeroArtworkMesh({
     video.crossOrigin = "anonymous";
     videoRef.current = video;
 
+    const announceCanPlay = () => {
+      if (
+        cancelled ||
+        mediaReadyAnnounced ||
+        video.readyState < HTMLMediaElement.HAVE_FUTURE_DATA
+      ) {
+        return;
+      }
+
+      mediaReadyAnnounced = true;
+      onMediaReady();
+    };
+
     const prepareTexture = async () => {
       try {
         await video.play();
         if (cancelled || video.videoWidth === 0 || video.videoHeight === 0) return;
+        announceCanPlay();
 
         const publishTexture = () => {
           if (cancelled) return;
@@ -139,13 +156,16 @@ function HeroArtworkMesh({
     };
 
     video.addEventListener("loadeddata", prepareTexture, { once: true });
+    video.addEventListener("canplay", announceCanPlay);
     video.addEventListener("error", handleError, { once: true });
     video.load();
+    announceCanPlay();
 
     return () => {
       cancelled = true;
       window.clearTimeout(fallbackTimer);
       video.removeEventListener("loadeddata", prepareTexture);
+      video.removeEventListener("canplay", announceCanPlay);
       video.removeEventListener("error", handleError);
       video.pause();
       video.removeAttribute("src");
@@ -153,7 +173,7 @@ function HeroArtworkMesh({
       videoRef.current = null;
       texture?.dispose();
     };
-  }, [onVideoError]);
+  }, [onMediaReady, onVideoError]);
 
   useEffect(() => {
     heroRef.current = document.getElementById("hero");
@@ -262,9 +282,11 @@ export default function HeroSpatialField() {
   }, []);
   const revealSpatialField = useCallback(() => {
     setIsReady(true);
+  }, []);
+  const useStaticFallback = useCallback(() => {
+    setVideoFailed(true);
     announceHeroMediaReady();
   }, [announceHeroMediaReady]);
-  const useStaticFallback = useCallback(() => setVideoFailed(true), []);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -306,36 +328,50 @@ export default function HeroSpatialField() {
     };
   }, []);
 
-  if (motionPreference === "reduce" || videoFailed) {
-    return (
-      <div className="hero-spatial-fallback">
+  return (
+    <>
+      <div
+        className={`hero-spatial-fallback ${
+          motionPreference === "full" && !videoFailed
+            ? "hero-spatial-fallback--underlay"
+            : ""
+        }`}
+      >
         <Image
+          key={motionPreference === "reduce" || videoFailed ? "fallback" : "underlay"}
           className="hero-spatial-fallback-image"
           src="/hero/hero-bg.jpg"
           alt=""
           fill
           priority
           sizes="100vw"
-          onLoad={announceHeroMediaReady}
+          onLoad={
+            motionPreference === "reduce" || videoFailed
+              ? announceHeroMediaReady
+              : undefined
+          }
         />
       </div>
-    );
-  }
 
-  if (motionPreference === "unknown") return null;
-
-  return (
-    <div className={`hero-spatial-field ${isReady ? "is-ready" : ""}`}>
-      <Canvas
-        dpr={[1, 1.25]}
-        gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
-        onCreated={({ gl }) => {
-          gl.outputColorSpace = THREE.SRGBColorSpace;
-          gl.toneMapping = THREE.NoToneMapping;
-        }}
-      >
-        <HeroArtworkMesh pointer={pointer} onReady={revealSpatialField} onVideoError={useStaticFallback} />
-      </Canvas>
-    </div>
+      {motionPreference === "full" && !videoFailed ? (
+        <div className={`hero-spatial-field ${isReady ? "is-ready" : ""}`}>
+          <Canvas
+            dpr={[1, 1.25]}
+            gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+            onCreated={({ gl }) => {
+              gl.outputColorSpace = THREE.SRGBColorSpace;
+              gl.toneMapping = THREE.NoToneMapping;
+            }}
+          >
+            <HeroArtworkMesh
+              pointer={pointer}
+              onReady={revealSpatialField}
+              onMediaReady={announceHeroMediaReady}
+              onVideoError={useStaticFallback}
+            />
+          </Canvas>
+        </div>
+      ) : null}
+    </>
   );
 }

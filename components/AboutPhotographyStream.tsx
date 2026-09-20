@@ -1,7 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import {
   aboutPhotography,
   type AboutPhotographyItem,
@@ -12,6 +17,82 @@ type PhotoRowProps = {
   row: number;
   direction: "left" | "right";
 };
+
+const SHOW_GALLERY_INTRO = false;
+const HERO_PHOTO_IDS = ["03", "05", "09", "07", "06"];
+const HERO_PHOTO_LABELS: Record<string, string> = {
+  "03": "REYKJAVIK",
+  "05": "TOLEDO",
+  "06": "SEVILLE",
+  "07": "LOFOTEN",
+  "09": "SAN DIEGO",
+};
+const HERO_PHOTO_DIMENSIONS: Record<string, { width: number; height: number }> = {
+  "03": { width: 4096, height: 1832 },
+  "04": { width: 6000, height: 3376 },
+  "05": { width: 6000, height: 3376 },
+  "06": { width: 6000, height: 3376 },
+  "07": { width: 6000, height: 3376 },
+  "08": { width: 6000, height: 3376 },
+  "09": { width: 6000, height: 3376 },
+};
+
+function MemoryCard({
+  photo,
+  index,
+}: {
+  photo: AboutPhotographyItem;
+  index: number;
+}) {
+  if (!photo.src) return null;
+
+  const dimensions = HERO_PHOTO_DIMENSIONS[photo.id] ?? {
+    width: 1600,
+    height: 900,
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType === "touch") return;
+
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width;
+    const y = (event.clientY - bounds.top) / bounds.height;
+
+    event.currentTarget.style.setProperty("--card-rotate-x", `${(0.5 - y) * 10}deg`);
+    event.currentTarget.style.setProperty("--card-rotate-y", `${(x - 0.5) * 12}deg`);
+    event.currentTarget.style.setProperty("--card-light-x", `${x * 100}%`);
+    event.currentTarget.style.setProperty("--card-light-y", `${y * 100}%`);
+  };
+
+  const resetPointer = (event: ReactPointerEvent<HTMLElement>) => {
+    event.currentTarget.style.removeProperty("--card-rotate-x");
+    event.currentTarget.style.removeProperty("--card-rotate-y");
+    event.currentTarget.style.removeProperty("--card-light-x");
+    event.currentTarget.style.removeProperty("--card-light-y");
+  };
+
+  return (
+    <figure
+      className={`about-memory-card about-memory-card--${index + 1}`}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetPointer}
+      aria-hidden="true"
+    >
+      <Image
+        src={photo.src}
+        alt=""
+        width={dimensions.width}
+        height={dimensions.height}
+        sizes="(max-width: 760px) 46vw, (max-width: 1100px) 28vw, 22vw"
+        className="about-memory-card-image"
+      />
+      <figcaption className="about-memory-card-caption">
+        {HERO_PHOTO_LABELS[photo.id]}
+      </figcaption>
+      <span className="about-memory-card-light" />
+    </figure>
+  );
+}
 
 function Photo({
   photo,
@@ -108,8 +189,77 @@ function buildRows(count: number) {
 }
 
 export default function AboutPhotographyStream() {
-  const rows = buildRows(3);
+  const rows = buildRows(2);
+  const heroPhotos = HERO_PHOTO_IDS.map((id) =>
+    aboutPhotography.find(
+      (photo) => photo.id === id && photo.type === "image" && photo.src,
+    ),
+  ).filter((photo): photo is AboutPhotographyItem => Boolean(photo));
   const heroRef = useRef<HTMLElement>(null);
+  const copyRef = useRef<HTMLDivElement>(null);
+  const [revealState, setRevealState] = useState<
+    "idle" | "pending" | "revealed" | "complete"
+  >("idle");
+
+  useEffect(() => {
+    const copy = copyRef.current;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    if (!copy || reducedMotion.matches) {
+      setRevealState("complete");
+      return;
+    }
+
+    setRevealState("pending");
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setRevealState("revealed");
+        observer.disconnect();
+      },
+      { threshold: 0.28 },
+    );
+
+    observer.observe(copy);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (revealState !== "revealed") return;
+
+    const completionTimer = window.setTimeout(() => {
+      setRevealState("complete");
+    }, 1160);
+
+    return () => window.clearTimeout(completionTimer);
+  }, [revealState]);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    const syncScrollbarCompensation = () => {
+      const scrollbarWidth = Math.max(
+        0,
+        window.innerWidth - document.documentElement.clientWidth,
+      );
+      hero.style.setProperty(
+        "--about-scrollbar-compensation",
+        `${scrollbarWidth / 2}px`,
+      );
+    };
+
+    syncScrollbarCompensation();
+    window.addEventListener("resize", syncScrollbarCompensation);
+
+    return () => {
+      window.removeEventListener("resize", syncScrollbarCompensation);
+      hero.style.removeProperty("--about-scrollbar-compensation");
+    };
+  }, []);
 
   useEffect(() => {
     const hero = heroRef.current;
@@ -120,20 +270,47 @@ export default function AboutPhotographyStream() {
       return;
     }
 
-    let current = 0;
-    let target = 0;
+    let targetX = 0;
+    let targetY = 0;
     let frame = 0;
 
+    const cardMotion = [
+      { currentX: 0, currentY: 0, x: 9, y: 4, ease: 0.072 },
+      { currentX: 0, currentY: 0, x: -6, y: 4, ease: 0.09 },
+      { currentX: 0, currentY: 0, x: 7, y: -3, ease: 0.061 },
+      { currentX: 0, currentY: 0, x: -5, y: -4, ease: 0.082 },
+      { currentX: 0, currentY: 0, x: 4, y: 3, ease: 0.054 },
+    ];
+
     const render = () => {
-      current += (target - current) * 0.075;
+      let isMoving = false;
 
-      hero.style.setProperty("--about-bg-shift", `${current * -7}px`);
-      hero.style.setProperty("--about-subject-shift", `${current * 17}px`);
+      cardMotion.forEach((motion, index) => {
+        const cardTargetX = targetX * motion.x;
+        const cardTargetY = targetY * motion.y;
+        motion.currentX += (cardTargetX - motion.currentX) * motion.ease;
+        motion.currentY += (cardTargetY - motion.currentY) * motion.ease;
 
-      if (Math.abs(target - current) > 0.002) {
+        hero.style.setProperty(
+          `--about-card-${index + 1}-x`,
+          `${motion.currentX.toFixed(3)}px`,
+        );
+        hero.style.setProperty(
+          `--about-card-${index + 1}-y`,
+          `${motion.currentY.toFixed(3)}px`,
+        );
+
+        if (
+          Math.abs(cardTargetX - motion.currentX) > 0.02 ||
+          Math.abs(cardTargetY - motion.currentY) > 0.02
+        ) {
+          isMoving = true;
+        }
+      });
+
+      if (isMoving) {
         frame = window.requestAnimationFrame(render);
       } else {
-        current = target;
         frame = 0;
       }
     };
@@ -146,13 +323,16 @@ export default function AboutPhotographyStream() {
 
     const handlePointerMove = (event: PointerEvent) => {
       const bounds = hero.getBoundingClientRect();
-      const normalized = (event.clientX - bounds.left) / bounds.width;
-      target = Math.max(-1, Math.min(1, normalized * 2 - 1));
+      const normalizedX = (event.clientX - bounds.left) / bounds.width;
+      const normalizedY = (event.clientY - bounds.top) / bounds.height;
+      targetX = Math.max(-1, Math.min(1, normalizedX * 2 - 1));
+      targetY = Math.max(-1, Math.min(1, normalizedY * 2 - 1));
       requestRender();
     };
 
     const handlePointerLeave = () => {
-      target = 0;
+      targetX = 0;
+      targetY = 0;
       requestRender();
     };
 
@@ -171,66 +351,80 @@ export default function AboutPhotographyStream() {
       className="about-photography"
       aria-label="Personal observations photography stream"
     >
-      <header className="about-story-hero" ref={heroRef}>
-        <Image
-          src="/about-photography/about-portrait-v1.png"
-          alt="Cindy sitting beneath warm orbital light"
-          fill
-          sizes="100vw"
-          className="about-story-hero-image about-story-hero-image--background"
-        />
-        <Image
-          src="/about-photography/about-portrait-v1.png"
-          alt=""
-          aria-hidden="true"
-          fill
-          sizes="100vw"
-          className="about-story-hero-image about-story-hero-image--subject"
-        />
+      <header
+        className={`about-story-hero about-story-hero--orbital about-story-hero--${revealState}`}
+        ref={heroRef}
+      >
+        <div className="about-memory-scene" aria-hidden="true">
+          <Image
+            className="about-story-hero-bg-video"
+            src="/about-photography/about-orbital-background.png"
+            alt=""
+            fill
+            sizes="100vw"
+          />
+          <span className="about-orbit-node about-orbit-node--1" />
+          <span className="about-orbit-node about-orbit-node--2" />
+          <div className="about-memory-cards">
+            {heroPhotos.map((photo, index) => (
+              <MemoryCard photo={photo} index={index} key={photo.id} />
+            ))}
+          </div>
+        </div>
         <div className="about-story-hero-shade" aria-hidden="true" />
 
         <div className="about-story-hero-inner">
-          <div className="about-story-copy">
+          <div
+            ref={copyRef}
+            className={`about-story-copy about-story-copy--${revealState}`}
+          >
             <p className="about-story-kicker">SAME GIRL · BIGGER WORLDS</p>
             <h2 className="about-photography-title">
-              <span className="about-title-line">设计之外，也记录让我</span>
-              <span className="about-title-line about-title-accent">
-                停下来的瞬间。
+              <span className="about-line-mask">
+                <span className="about-title-line">设计之外，也记录那些</span>
+              </span>
+              <span className="about-line-mask">
+                <span className="about-title-line">让我停下来的瞬间</span>
               </span>
             </h2>
             <p className="about-photography-copy">
-              旅行中的风景、城市、建筑、展览、光线与材质，
-              <br className="about-copy-break" />
-              都在不断影响我观察和理解体验的方式。
+              <span className="about-copy-mask">
+                <span className="about-copy-group">
+                  旅行中的风景、城市、建筑与展览，
+                </span>
+              </span>
+              <span className="about-copy-mask">
+                <span className="about-copy-group">
+                  光线与材质，也持续影响我观察和理解体验的方式。
+                </span>
+              </span>
             </p>
             <a className="about-story-scroll" href="#about-photography-gallery">
               <span aria-hidden="true">↓</span>
-              探索我的影像记录
+              EXPLORE MY JOURNEY
             </a>
           </div>
 
-          <p className="about-story-note" aria-hidden="true">
-            CAPTURE
-            <br />
-            A BETTER ME
-          </p>
+
         </div>
       </header>
 
-      <div className="about-gallery-intro" id="about-photography-gallery">
-        <p className="about-gallery-label">PLACES I&apos;VE BEEN</p>
-        <h3>
-          走过的地方，
-          <br />
-          <span>一直在给我新的灵感。</span>
-        </h3>
-        <p>
-          每一座城市都有不同的节奏与情绪，
-          镜头记录的不只是风景，更是当下的感受。
-        </p>
-      </div>
+      {SHOW_GALLERY_INTRO ? (
+        <div className="about-gallery-intro" id="about-photography-gallery">
+          <p className="about-gallery-label">PLACES I&apos;VE BEEN</p>
+          <h3>
+            走过的地方，
+            <br />
+            <span>一直在给我新的灵感。</span>
+          </h3>
+          <p>
+            每一座城市都有不同的节奏与情绪，
+            镜头记录的不只是风景，更是当下的感受。
+          </p>
+        </div>
+      ) : null}
 
-      <div className="about-photography-viewport">
+      <div className="about-photography-viewport" id="about-photography-gallery">
         {rows.map((photos, index) => (
           <PhotoRow
             key={index}
@@ -245,27 +439,7 @@ export default function AboutPhotographyStream() {
         ))}
       </div>
 
-      <footer className="about-story-outro">
-        <Image
-          src="/about-photography/about-outro-v2.png"
-          alt="A traveler watching a golden sunrise over a mountain lake"
-          fill
-          sizes="100vw"
-          className="about-story-outro-image"
-        />
-        <div className="about-story-outro-shade" aria-hidden="true" />
-        <div className="about-story-outro-content">
-          <p className="about-story-outro-label">MORE THAN A DESTINATION</p>
-          <h3>
-            去看更大的世界
-            <br />
-            <span>也找回更真实的自己</span>
-          </h3>
-          <p className="about-story-outro-caption">
-            生活，是关于美好瞬间的收藏。
-          </p>
-        </div>
-      </footer>
+
     </section>
   );
 }

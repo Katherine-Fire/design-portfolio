@@ -24,7 +24,7 @@ export default function ContactSection() {
         <div className="contact-intro">
           <p lang="zh-CN">
             无论是项目合作、产品设计、体验优化，还是关于设计方向的交流，都欢迎联系我。
-            如果你有具体需求，可以直接通过 Email、电话或微信联系，我会尽快回复。
+            如果你有具体需求，可以直接通过 Email、电话或微信联系。
           </p>
         </div>
 

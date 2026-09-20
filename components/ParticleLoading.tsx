@@ -3,12 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 
 const LOADER_TIMING = {
-  // At 1.25x the release begins around 4.54s. Reveal the page while the
-  // particles are still travelling outward so the burst becomes the wipe.
-  minimumVisibleMs: 4540,
-  reducedMotionMinimumVisibleMs: 600,
-  maximumVisibleMs: 12000,
-  burstLeadMs: 180,
+  minimumVisibleMs: 900,
+  maximumVisibleMs: 8000,
+  burstLeadMs: 120,
+  burstFallbackMs: 700,
+  releaseRetryMs: 80,
   exitDurationMs: 620,
 } as const;
 
@@ -26,6 +25,8 @@ export default function ParticleLoading() {
     let removeTimer = 0;
     let maximumTimer = 0;
     let burstLeadTimer = 0;
+    let burstFallbackTimer = 0;
+    let releaseRetryTimer = 0;
     let cancelled = false;
     let removeMessageListeners = () => {};
 
@@ -40,24 +41,20 @@ export default function ParticleLoading() {
 
     const beginExit = () => {
       if (cancelled || phaseRef.current !== "active") return;
+      window.clearInterval(releaseRetryTimer);
+      window.clearTimeout(burstFallbackTimer);
       phaseRef.current = "exiting";
       setPhase("exiting");
       removeTimer = window.setTimeout(removeOverlay, LOADER_TIMING.exitDurationMs);
     };
 
     const afterMinimumVisible = (callback: () => void) => {
-      const minimumVisibleMs = prefersReducedMotion
-        ? LOADER_TIMING.reducedMotionMinimumVisibleMs
-        : LOADER_TIMING.minimumVisibleMs;
-      const remaining = Math.max(0, minimumVisibleMs - (performance.now() - startedAt));
+      const remaining = Math.max(
+        0,
+        LOADER_TIMING.minimumVisibleMs - (performance.now() - startedAt),
+      );
       exitTimer = window.setTimeout(callback, remaining);
     };
-
-    const pageReady = document.readyState === "complete"
-      ? Promise.resolve()
-      : new Promise<void>((resolve) => {
-          window.addEventListener("load", () => resolve(), { once: true });
-        });
 
     const fontsReady = "fonts" in document
       ? document.fonts.ready.then(() => undefined).catch(() => undefined)
@@ -72,41 +69,43 @@ export default function ParticleLoading() {
       });
     })();
 
-    const particleReady = prefersReducedMotion
-      ? Promise.resolve()
-      : new Promise<void>((resolve) => {
-          const handleParticleReady = (event: MessageEvent) => {
-            if (event.origin !== window.location.origin) return;
-            if (event.data?.type !== "portfolio:particle-ready") return;
-            resolve();
-          };
+    const handleParticleBurst = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type !== "portfolio:particle-burst") return;
+      window.clearInterval(releaseRetryTimer);
+      window.clearTimeout(burstFallbackTimer);
+      burstLeadTimer = window.setTimeout(beginExit, LOADER_TIMING.burstLeadMs);
+    };
 
-          const handleParticleBurst = (event: MessageEvent) => {
-            if (event.origin !== window.location.origin) return;
-            if (event.data?.type !== "portfolio:particle-burst") return;
-            burstLeadTimer = window.setTimeout(beginExit, LOADER_TIMING.burstLeadMs);
-          };
-
-          removeMessageListeners = () => {
-            window.removeEventListener("message", handleParticleReady);
-            window.removeEventListener("message", handleParticleBurst);
-          };
-          window.addEventListener("message", handleParticleReady);
-          window.addEventListener("message", handleParticleBurst);
-        });
+    removeMessageListeners = () => {
+      window.removeEventListener("message", handleParticleBurst);
+    };
+    window.addEventListener("message", handleParticleBurst);
 
     const releaseOrExit = () => {
       if (prefersReducedMotion) {
         beginExit();
         return;
       }
-      frameRef.current?.contentWindow?.postMessage(
-        { type: "portfolio:particle-release" },
-        window.location.origin,
+      const requestParticleRelease = () => {
+        frameRef.current?.contentWindow?.postMessage(
+          { type: "portfolio:particle-release" },
+          window.location.origin,
+        );
+      };
+
+      requestParticleRelease();
+      releaseRetryTimer = window.setInterval(
+        requestParticleRelease,
+        LOADER_TIMING.releaseRetryMs,
+      );
+      burstFallbackTimer = window.setTimeout(
+        beginExit,
+        LOADER_TIMING.burstFallbackMs,
       );
     };
 
-    Promise.all([pageReady, fontsReady, heroReady, particleReady])
+    Promise.all([fontsReady, heroReady])
       .then(() => afterMinimumVisible(releaseOrExit))
       .catch(() => afterMinimumVisible(releaseOrExit));
     maximumTimer = window.setTimeout(beginExit, LOADER_TIMING.maximumVisibleMs);
@@ -117,6 +116,8 @@ export default function ParticleLoading() {
       window.clearTimeout(removeTimer);
       window.clearTimeout(maximumTimer);
       window.clearTimeout(burstLeadTimer);
+      window.clearTimeout(burstFallbackTimer);
+      window.clearInterval(releaseRetryTimer);
       removeMessageListeners();
       delete document.documentElement.dataset.portfolioLoading;
     };

@@ -44,6 +44,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
+      <head>
+        <link
+          rel="preload"
+          href="/hero/hero-motion-web.mp4"
+          as="video"
+          type="video/mp4"
+        />
+      </head>
       <body>
         <Script
           id="theme-init"

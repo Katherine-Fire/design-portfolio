@@ -1,0 +1,285 @@
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\kkhan because it is outside the current Git repository (C:\Users\kkhan\Documents\Codex\2026-08-14\cindykan-portfolio).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+Error: The requested resource isn't a valid image.
+    at ignore-listed frames {
+  statusCode: 400
+}
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] Image with src "/projects/ai-communication/AI-project-01-v2.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] Image with src "/projects/coinpark-redesign/coinpark-cover.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] ./app/globals.css:350:14
+Error: Parsing CSS source code failed
+  348 | }
+  349 |
+> 350 | align-items: center;
+      |              ^
+  351 | gap: clamp(56px, 7vw, 128px);
+  352 | }
+  353 |
+
+Invalid token in pseudo element: WhiteSpace(" ")
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:350:14
+  348 | }
+  349 |
+> 350 | align-items: center;
+      |              ^
+  351 | gap: clamp(56px, 7vw, 128px);
+  352 | }
+  353 |
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Server Component] 
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+Error: The requested resource isn't a valid image.
+    at ignore-listed frames {
+  statusCode: 400
+}
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] Image with src "/about-photography/03.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] Image with src "/about-photography/03.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] ./app/globals.css:5718:4
+Error: Parsing CSS source code failed
+  5716 |   }
+  5717 |
+> 5718 |   . .about-memory-card--1 {
+       |    ^
+  5719 |     top: 24%;
+  5720 |     right: 13%;
+  5721 |     width: min(38vw, 170px);
+
+Expected identifier in class selector, got WhiteSpace(" ")
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:5718:4
+  5716 |   }
+  5717 |
+> 5718 |   . .about-memory-card--1 {
+       |    ^
+  5719 |     top: 24%;
+  5720 |     right: 13%;
+  5721 |     width: min(38vw, 170px);
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Server Component] 
+[browser] ./app/globals.css:5718:4
+Error: Parsing CSS source code failed
+  5716 |   }
+  5717 |
+> 5718 |   . .about-memory-card--1 {
+       |    ^
+  5719 |     top: 24%;
+  5720 |     right: 13%;
+  5721 |     width: min(38vw, 170px);
+
+Expected identifier in class selector, got WhiteSpace(" ")
+
+Generated code of PostCSS transform of file content of app/globals.css:
+./app/globals.css:5718:4
+  5716 |   }
+  5717 |
+> 5718 |   . .about-memory-card--1 {
+       |    ^
+  5719 |     top: 24%;
+  5720 |     right: 13%;
+  5721 |     width: min(38vw, 170px);
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Server Component] 
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+Error: The requested resource isn't a valid image.
+    at ignore-listed frames {
+  statusCode: 400
+}
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] Image with src "/about-photography/about-orbital-background.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ The requested resource isn't a valid image for /hero/hero-bg.jpg received null
+[browser] Image with src "/projects/ai-communication/AI-project-01-v2.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading

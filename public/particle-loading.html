@@ -148,7 +148,13 @@
       window.addEventListener('blur', () => { clearPointer(); strokes.length = 0; });
       window.addEventListener('message', event => {
         if (event.origin !== location.origin) return;
-        if (event.data?.type === 'portfolio:particle-release') releaseRequested = true;
+        if (event.data?.type === 'portfolio:particle-release') {
+          releaseRequested = true;
+          if (LOADER_MODE && elapsed < TIMING.release) {
+            elapsed = TIMING.release;
+            last = performance.now();
+          }
+        }
       });
       function resize() {
         const rect = canvas.getBoundingClientRect();
