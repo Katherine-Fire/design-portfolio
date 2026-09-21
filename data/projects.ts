@@ -71,7 +71,7 @@ export const projects: Project[] = [
         tags: ["Live Streaming", "UI Design", "Interaction"],
         cover: "/projects/live-room-redesign/Cover-v3.png",
         content: [
-            { type: "image", src: "/projects/live-room-redesign/Live-Room-Redesign-02.png" },
+            { type: "image", src: "/projects/live-room-redesign/Live-Room-Redesign-02.jpg" },
         ],
     },
 
@@ -92,7 +92,7 @@ export const projects: Project[] = [
             {
                 type: "image",
                 src:
-                    "/projects/live-pk-optimization/Live-PK-Optimization-02.png",
+                    "/projects/live-pk-optimization/Live-PK-Optimization-02.jpg",
             },
         ],
     },
@@ -110,7 +110,7 @@ export const projects: Project[] = [
         content: [
             {
                 type: "image",
-                src: "/projects/coinpark-redesign/coinpark-1-3.png",
+                src: "/projects/coinpark-redesign/coinpark-1-3.jpg",
             },
         ],
     },
@@ -130,7 +130,7 @@ export const projects: Project[] = [
         content: [
             {
                 type: "image",
-                src: "/projects/decentralized-exchange/d1.png",
+                src: "/projects/decentralized-exchange/d1.webp",
             },
             {
                 type: "image",
@@ -138,11 +138,11 @@ export const projects: Project[] = [
             },
             {
                 type: "image",
-                src: "/projects/decentralized-exchange/d3.png",
+                src: "/projects/decentralized-exchange/d3.jpg",
             },
             {
                 type: "image",
-                src: "/projects/decentralized-exchange/d4.png",
+                src: "/projects/decentralized-exchange/d4.jpg",
             },
         ],
     },
@@ -163,7 +163,7 @@ export const projects: Project[] = [
             {
                 type: "image",
                 src:
-                    "/projects/campaign-operations/Campaign-Operations-02.png",
+                    "/projects/campaign-operations/Campaign-Operations-02.jpg",
             },
         ],
     },

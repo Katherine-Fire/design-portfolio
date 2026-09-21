@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { projects } from "@/data/projects";
+import ProjectVisitContext from "@/components/ProjectVisitContext";
 
 
 type PageProps = {
@@ -9,6 +10,10 @@ type PageProps = {
         slug: string;
     }>;
 };
+
+export function generateStaticParams() {
+    return projects.map(({ slug }) => ({ slug }));
+}
 
 export default async function ProjectPage({
     params,
@@ -33,8 +38,9 @@ export default async function ProjectPage({
 
     return (
         <main className="project-page">
+            <ProjectVisitContext />
             <nav className="project-page-nav" aria-label="Project navigation">
-                <Link className="project-return" href="/#hero">
+                <Link className="project-return" href="/#work">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M14.5 5 7.5 12l7 7" />
                         <path d="M8 12h10" />

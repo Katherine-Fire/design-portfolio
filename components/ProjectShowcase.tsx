@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/data/projects";
+import { PROJECT_SCROLL_POSITION_KEY } from "@/components/ProjectVisitContext";
 
 type ProjectShowcaseProps = {
   projects: Project[];
@@ -15,6 +18,12 @@ export default function ProjectShowcase({ projects }: ProjectShowcaseProps) {
           href={`/work/${project.slug}`}
           className="project-index-row"
           aria-label={`View ${project.titleZh}`}
+          onClick={() => {
+            sessionStorage.setItem(
+              PROJECT_SCROLL_POSITION_KEY,
+              String(window.scrollY),
+            );
+          }}
         >
           <div className="project-index-meta">
             <span className="project-index-number">

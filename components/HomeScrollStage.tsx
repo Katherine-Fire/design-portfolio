@@ -1,6 +1,10 @@
 "use client";
 
 import { useLayoutEffect, useRef, type ReactNode } from "react";
+import {
+  PROJECT_RETURN_CONTEXT_KEY,
+  PROJECT_SCROLL_POSITION_KEY,
+} from "@/components/ProjectVisitContext";
 
 type HomeScrollStageProps = {
   children: ReactNode;
@@ -19,6 +23,54 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
   useLayoutEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
+    }
+
+    const savedScrollPosition = sessionStorage.getItem(
+      PROJECT_SCROLL_POSITION_KEY,
+    );
+    const returnContext = sessionStorage.getItem(PROJECT_RETURN_CONTEXT_KEY);
+    const shouldRestoreWorkPosition =
+      returnContext === "project" && window.location.hash !== "#hero";
+
+    if (shouldRestoreWorkPosition) {
+      const savedY = savedScrollPosition === null
+        ? Number.NaN
+        : Number(savedScrollPosition);
+      sessionStorage.removeItem(PROJECT_SCROLL_POSITION_KEY);
+      sessionStorage.removeItem(PROJECT_RETURN_CONTEXT_KEY);
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${window.location.pathname}${window.location.search}`,
+      );
+
+      let secondFrame = 0;
+      const firstFrame = window.requestAnimationFrame(() => {
+        secondFrame = window.requestAnimationFrame(() => {
+          const workTop = document.getElementById("work")?.offsetTop ?? 0;
+          window.scrollTo({
+            top: Number.isFinite(savedY) ? savedY : workTop,
+            left: 0,
+            behavior: "auto",
+          });
+        });
+      });
+
+      return () => {
+        window.cancelAnimationFrame(firstFrame);
+        window.cancelAnimationFrame(secondFrame);
+      };
+    }
+
+    sessionStorage.removeItem(PROJECT_SCROLL_POSITION_KEY);
+    sessionStorage.removeItem(PROJECT_RETURN_CONTEXT_KEY);
+
+    if (window.location.hash) {
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${window.location.pathname}${window.location.search}`,
+      );
     }
 
     const resetScrollPosition = () => {

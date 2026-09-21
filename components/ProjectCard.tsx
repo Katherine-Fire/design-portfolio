@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
 import type { Project } from "@/data/projects";
+import { PROJECT_SCROLL_POSITION_KEY } from "@/components/ProjectVisitContext";
 
 type ProjectCardProps = {
   project: Project;
@@ -99,6 +100,12 @@ export default function ProjectCard({
       onPointerEnter={(event) => handlePointerMove(event, true)}
       onPointerMove={(event) => handlePointerMove(event)}
       onPointerLeave={handlePointerLeave}
+      onClick={() => {
+        sessionStorage.setItem(
+          PROJECT_SCROLL_POSITION_KEY,
+          String(window.scrollY)
+        );
+      }}
     >
       <article className="project-card-inner">
         <div className="project-card-cover" data-cursor="spacecraft">
