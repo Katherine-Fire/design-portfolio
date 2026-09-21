@@ -29,11 +29,13 @@ type SpatialShader = Parameters<THREE.MeshBasicMaterial["onBeforeCompile"]>[0];
 
 function HeroArtworkMesh({
   pointer,
+  isActive,
   onReady,
   onMediaReady,
   onVideoError,
 }: {
   pointer: React.RefObject<THREE.Vector2>;
+  isActive: boolean;
   onReady: () => void;
   onMediaReady: () => void;
   onVideoError: () => void;
@@ -177,6 +179,17 @@ function HeroArtworkMesh({
   }, [onMediaReady, onVideoError]);
 
   useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isActive) {
+      void video.play().catch(() => undefined);
+    } else {
+      video.pause();
+    }
+  }, [isActive, videoTexture]);
+
+  useEffect(() => {
     heroRef.current = document.getElementById("hero");
     return () => {
       heroRef.current?.style.removeProperty("--hero-space-x");
@@ -188,7 +201,7 @@ function HeroArtworkMesh({
     const shader = shaderRef.current;
     const mesh = meshRef.current;
     const video = videoRef.current;
-    if (!shader || !mesh || !videoTexture || !video) return;
+    if (!isActive || !shader || !mesh || !videoTexture || !video) return;
 
     const videoProgress = Number.isFinite(video.duration) && video.duration > 0
       ? THREE.MathUtils.clamp(video.currentTime / video.duration, 0, 1)
@@ -277,6 +290,7 @@ export default function HeroSpatialField() {
   const [motionPreference, setMotionPreference] = useState<"unknown" | "full" | "reduce">("unknown");
   const [isReady, setIsReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
   const announceHeroMediaReady = useCallback(() => {
     document.documentElement.dataset.heroMediaReady = "true";
     window.dispatchEvent(new Event("portfolio:hero-media-ready"));
@@ -302,8 +316,8 @@ export default function HeroSpatialField() {
       setIsReady(false);
       setVideoFailed(!media.matches && !supportsWebGL);
     };
+    const hero = document.getElementById("hero");
     const updatePointerPosition = () => {
-      const hero = document.getElementById("hero");
       const bounds = hero?.getBoundingClientRect();
       if (!bounds || bounds.width === 0 || bounds.height === 0) return;
 
@@ -320,13 +334,25 @@ export default function HeroSpatialField() {
     updateMotionPreference();
     updatePointerPosition();
     media.addEventListener("change", updateMotionPreference);
-    window.addEventListener("pointermove", updatePointer, { passive: true });
+    hero?.addEventListener("pointermove", updatePointer, { passive: true });
     window.addEventListener("resize", updatePointerPosition, { passive: true });
     return () => {
       media.removeEventListener("change", updateMotionPreference);
-      window.removeEventListener("pointermove", updatePointer);
+      hero?.removeEventListener("pointermove", updatePointer);
       window.removeEventListener("resize", updatePointerPosition);
     };
+  }, []);
+
+  useEffect(() => {
+    const hero = document.getElementById("hero");
+    if (!hero) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsHeroVisible(entry.isIntersecting),
+      { rootMargin: "160px 0px", threshold: 0 },
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -357,6 +383,7 @@ export default function HeroSpatialField() {
       {motionPreference === "full" && !videoFailed ? (
         <div className={`hero-spatial-field ${isReady ? "is-ready" : ""}`}>
           <Canvas
+            frameloop={isHeroVisible ? "always" : "never"}
             dpr={[1, 1.25]}
             gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
             onCreated={({ gl }) => {
@@ -366,6 +393,7 @@ export default function HeroSpatialField() {
           >
             <HeroArtworkMesh
               pointer={pointer}
+              isActive={isHeroVisible}
               onReady={revealSpatialField}
               onMediaReady={announceHeroMediaReady}
               onVideoError={useStaticFallback}

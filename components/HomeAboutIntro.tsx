@@ -53,6 +53,7 @@ export default function HomeAboutIntro() {
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
+    let isNearViewport = true;
 
     const rangeProgress = (progress: number, start: number, end: number) =>
       Math.min(1, Math.max(0, (progress - start) / (end - start)));
@@ -88,10 +89,20 @@ export default function HomeAboutIntro() {
     };
 
     const requestUpdate = () => {
+      if (!isNearViewport) return;
       if (frame === 0) frame = window.requestAnimationFrame(updateProgress);
     };
 
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isNearViewport = entry.isIntersecting;
+        if (isNearViewport) requestUpdate();
+      },
+      { rootMargin: "25% 0px", threshold: 0 },
+    );
+
     updateProgress();
+    visibilityObserver.observe(section);
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
     reducedMotion.addEventListener("change", requestUpdate);
@@ -100,6 +111,7 @@ export default function HomeAboutIntro() {
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
       reducedMotion.removeEventListener("change", requestUpdate);
+      visibilityObserver.disconnect();
       if (frame !== 0) window.cancelAnimationFrame(frame);
       section.removeAttribute("data-scroll-reveal");
       [

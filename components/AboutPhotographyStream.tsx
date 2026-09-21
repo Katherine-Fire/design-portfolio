@@ -84,6 +84,9 @@ function MemoryCard({
         alt=""
         width={dimensions.width}
         height={dimensions.height}
+        loading="lazy"
+        decoding="async"
+        fetchPriority="low"
         sizes="(max-width: 760px) 46vw, (max-width: 1100px) 28vw, 22vw"
         className="about-memory-card-image"
       />
@@ -116,13 +119,16 @@ function Photo({
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="none"
           />
         ) : (
           <Image
             src={photo.src}
             alt={duplicate ? "" : (photo.alt ?? "Personal travel observation")}
             fill
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
             sizes="(max-width: 760px) 44vw, (max-width: 1100px) 22vw, 18vw"
             className="about-photo-image"
           />
@@ -142,19 +148,13 @@ function PhotoRow({
   row,
   direction,
 }: PhotoRowProps) {
-  const loopPhotos = [
-    ...photos,
-    ...photos,
-    ...photos,
-  ];
-
   return (
     <div
       className={`about-photography-row about-photography-row--${row} about-photography-row--${direction}`}
     >
       <div className="about-photography-track">
         <div className="about-photo-set">
-          {loopPhotos.map((photo, index) => (
+          {photos.map((photo, index) => (
             <Photo
               photo={photo}
               key={`${photo.id}-primary-${index}`}
@@ -166,7 +166,7 @@ function PhotoRow({
           className="about-photo-set"
           aria-hidden="true"
         >
-          {loopPhotos.map((photo, index) => (
+          {photos.map((photo, index) => (
             <Photo
               photo={photo}
               duplicate
@@ -189,18 +189,42 @@ function buildRows(count: number) {
   );
 }
 
+const PHOTO_ROWS = buildRows(2);
+const HERO_PHOTOS = HERO_PHOTO_IDS.map((id) =>
+  aboutPhotography.find(
+    (photo) => photo.id === id && photo.type === "image" && photo.src,
+  ),
+).filter((photo): photo is AboutPhotographyItem => Boolean(photo));
+
 export default function AboutPhotographyStream() {
-  const rows = buildRows(2);
-  const heroPhotos = HERO_PHOTO_IDS.map((id) =>
-    aboutPhotography.find(
-      (photo) => photo.id === id && photo.type === "image" && photo.src,
-    ),
-  ).filter((photo): photo is AboutPhotographyItem => Boolean(photo));
   const heroRef = useRef<HTMLElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const [revealState, setRevealState] = useState<
     "idle" | "pending" | "revealed" | "complete"
   >("idle");
+
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        carousel.dataset.active = String(entry.isIntersecting);
+        carousel.querySelectorAll("video").forEach((video) => {
+          if (entry.isIntersecting) {
+            void video.play().catch(() => undefined);
+          } else {
+            video.pause();
+          }
+        });
+      },
+      { rootMargin: "160px 0px", threshold: 0 },
+    );
+
+    observer.observe(carousel);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const copy = copyRef.current;
@@ -363,11 +387,13 @@ export default function AboutPhotographyStream() {
             alt=""
             fill
             sizes="100vw"
+            loading="lazy"
+            decoding="async"
           />
           <span className="about-orbit-node about-orbit-node--1" />
           <span className="about-orbit-node about-orbit-node--2" />
           <div className="about-memory-cards">
-            {heroPhotos.map((photo, index) => (
+            {HERO_PHOTOS.map((photo, index) => (
               <MemoryCard photo={photo} index={index} key={photo.id} />
             ))}
           </div>
@@ -425,8 +451,13 @@ export default function AboutPhotographyStream() {
         </div>
       ) : null}
 
-      <div className="about-photography-viewport" id="about-photography-gallery">
-        {rows.map((photos, index) => (
+      <div
+        ref={carouselRef}
+        className="about-photography-viewport"
+        id="about-photography-gallery"
+        data-active="false"
+      >
+        {PHOTO_ROWS.map((photos, index) => (
           <PhotoRow
             key={index}
             photos={photos}

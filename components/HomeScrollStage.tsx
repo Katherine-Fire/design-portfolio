@@ -105,6 +105,7 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
     const workHeading = stage.querySelector<HTMLElement>(".work-heading");
     const projectCard = stage.querySelector<HTMLElement>(".project-card");
     let frame = 0;
+    let isStageVisible = true;
 
     const update = () => {
       frame = 0;
@@ -142,10 +143,20 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
     };
 
     const requestUpdate = () => {
+      if (!isStageVisible) return;
       if (frame === 0) frame = window.requestAnimationFrame(update);
     };
 
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isStageVisible = entry.isIntersecting;
+        if (isStageVisible) requestUpdate();
+      },
+      { threshold: 0 },
+    );
+
     update();
+    visibilityObserver.observe(stage);
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
     motionPreference.addEventListener("change", requestUpdate);
@@ -156,6 +167,7 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
       window.removeEventListener("resize", requestUpdate);
       motionPreference.removeEventListener("change", requestUpdate);
       mobileLayout.removeEventListener("change", requestUpdate);
+      visibilityObserver.disconnect();
       if (frame !== 0) window.cancelAnimationFrame(frame);
     };
   }, []);

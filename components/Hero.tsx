@@ -104,25 +104,46 @@ export default function Hero() {
 
   useEffect(() => {
     let frame = 0;
+    let heroThreshold = 0;
+    let lastBeyondHero: boolean | null = null;
+    let lastShowBackToTop: boolean | null = null;
+
+    const measureHero = () => {
+      heroThreshold = (document.getElementById("hero")?.offsetHeight ?? window.innerHeight) - 64;
+    };
 
     const updateScrollState = () => {
       frame = 0;
-      const heroHeight = document.getElementById("hero")?.offsetHeight ?? window.innerHeight;
-      setIsBeyondHero(window.scrollY >= heroHeight - 64);
-      setShowBackToTop(window.scrollY > 600);
+      const beyondHero = window.scrollY >= heroThreshold;
+      const shouldShowBackToTop = window.scrollY > 600;
+
+      if (beyondHero !== lastBeyondHero) {
+        lastBeyondHero = beyondHero;
+        setIsBeyondHero(beyondHero);
+      }
+      if (shouldShowBackToTop !== lastShowBackToTop) {
+        lastShowBackToTop = shouldShowBackToTop;
+        setShowBackToTop(shouldShowBackToTop);
+      }
     };
 
     const requestUpdate = () => {
       if (frame === 0) frame = window.requestAnimationFrame(updateScrollState);
     };
 
+    const handleResize = () => {
+      measureHero();
+      requestUpdate();
+    };
+
+    measureHero();
     updateScrollState();
     window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate);
+    window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("scroll", requestUpdate);
-      window.removeEventListener("resize", requestUpdate);
+      window.removeEventListener("resize", handleResize);
       if (frame !== 0) window.cancelAnimationFrame(frame);
     };
   }, []);

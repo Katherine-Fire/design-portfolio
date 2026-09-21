@@ -3514,6 +3514,7 @@ html[data-theme="light"] .project-showcase-card[data-position="0"] {
   position: relative;
   height: clamp(600px, 70vh, 720px);
   overflow: hidden;
+  contain: layout paint;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
 }
@@ -3623,7 +3624,8 @@ html[data-theme="light"] .project-showcase-card[data-position="0"] {
   width: max-content;
   gap: 0;
 
-  will-change: transform;
+  will-change: auto;
+  animation-play-state: paused;
 }
 
 .about-photo-set {
@@ -3703,7 +3705,12 @@ html[data-theme="light"] .project-showcase-card[data-position="0"] {
   animation-duration: 47s;
 }
 
-.about-photography-row:hover .about-photography-track {
+.about-photography-viewport[data-active="true"] .about-photography-track {
+  will-change: transform;
+  animation-play-state: running;
+}
+
+.about-photography-viewport[data-active="true"] .about-photography-row:hover .about-photography-track {
   animation-play-state: paused;
 }
 
