@@ -682,6 +682,32 @@ a {
   z-index: 0;
 }
 
+/* Keep layout geometry intact while removing fully covered, offscreen scenes
+   from the compositor. Observers restore them well before they re-enter view. */
+.hero.is-offstage .hero-visual,
+.hero.is-offstage .hero-reflection,
+.hero.is-offstage .hero-content,
+.hero.is-offstage .hero-scroll,
+.home-about-intro[data-near-viewport="false"] .home-about-intro-shell,
+.work-section[data-near-viewport="false"] .work-section-inner,
+.about-story-hero[data-near-viewport="false"] .about-memory-scene,
+.about-story-hero[data-near-viewport="false"] .about-story-hero-inner,
+.about-story-hero[data-near-viewport="false"] .about-story-hero-shade {
+  visibility: hidden;
+}
+
+.home-about-intro,
+.work-section,
+.about-story-hero {
+  contain-intrinsic-block-size: auto 900px;
+}
+
+.home-about-intro[data-near-viewport="false"],
+.work-section[data-near-viewport="false"],
+.about-story-hero[data-near-viewport="false"] {
+  content-visibility: hidden;
+}
+
 .home-scroll-stage .work-section {
   position: relative;
   z-index: 3;

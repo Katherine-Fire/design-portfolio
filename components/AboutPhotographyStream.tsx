@@ -266,6 +266,15 @@ export default function AboutPhotographyStream() {
     const hero = heroRef.current;
     if (!hero) return;
 
+    hero.dataset.nearViewport = "true";
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        hero.dataset.nearViewport = String(entry.isIntersecting);
+      },
+      { rootMargin: "10% 0px", threshold: 0 },
+    );
+    visibilityObserver.observe(hero);
+
     const syncScrollbarCompensation = () => {
       const scrollbarWidth = Math.max(
         0,
@@ -281,8 +290,10 @@ export default function AboutPhotographyStream() {
     window.addEventListener("resize", syncScrollbarCompensation);
 
     return () => {
+      visibilityObserver.disconnect();
       window.removeEventListener("resize", syncScrollbarCompensation);
       hero.style.removeProperty("--about-scrollbar-compensation");
+      hero.removeAttribute("data-near-viewport");
     };
   }, []);
 

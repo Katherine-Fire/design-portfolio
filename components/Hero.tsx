@@ -191,7 +191,7 @@ export default function Hero() {
       <section
         ref={heroRef}
         id="hero"
-        className="hero"
+        className={`hero ${isBeyondHero ? "is-offstage" : ""}`}
       >
         <div className="hero-visual" aria-hidden="true">
           <HeroSpatialField />

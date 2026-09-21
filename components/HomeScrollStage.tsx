@@ -104,6 +104,7 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
     const mobileLayout = window.matchMedia("(max-width: 760px)");
     const workHeading = stage.querySelector<HTMLElement>(".work-heading");
     const projectCard = stage.querySelector<HTMLElement>(".project-card");
+    const workSection = stage.querySelector<HTMLElement>(".work-section");
     let frame = 0;
     let isStageVisible = true;
 
@@ -155,8 +156,21 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
       { threshold: 0 },
     );
 
+    const workVisibilityObserver = workSection
+      ? new IntersectionObserver(
+          ([entry]) => {
+            workSection.dataset.nearViewport = String(entry.isIntersecting);
+          },
+          { rootMargin: "60% 0px", threshold: 0 },
+        )
+      : null;
+
     update();
     visibilityObserver.observe(stage);
+    if (workSection && workVisibilityObserver) {
+      workSection.dataset.nearViewport = "true";
+      workVisibilityObserver.observe(workSection);
+    }
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
     motionPreference.addEventListener("change", requestUpdate);
@@ -168,6 +182,8 @@ export default function HomeScrollStage({ children }: HomeScrollStageProps) {
       motionPreference.removeEventListener("change", requestUpdate);
       mobileLayout.removeEventListener("change", requestUpdate);
       visibilityObserver.disconnect();
+      workVisibilityObserver?.disconnect();
+      workSection?.removeAttribute("data-near-viewport");
       if (frame !== 0) window.cancelAnimationFrame(frame);
     };
   }, []);

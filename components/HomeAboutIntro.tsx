@@ -10,6 +10,7 @@ import { withBasePath } from "@/lib/sitePath";
 
 export default function HomeAboutIntro() {
   const sectionRef = useRef<HTMLElement>(null);
+  const portraitVideoRef = useRef<HTMLVideoElement>(null);
   const [revealState, setRevealState] = useState<
     "idle" | "pending" | "revealed" | "complete"
   >("idle");
@@ -96,12 +97,19 @@ export default function HomeAboutIntro() {
     const visibilityObserver = new IntersectionObserver(
       ([entry]) => {
         isNearViewport = entry.isIntersecting;
-        if (isNearViewport) requestUpdate();
+        section.dataset.nearViewport = String(isNearViewport);
+        if (isNearViewport) {
+          requestUpdate();
+          void portraitVideoRef.current?.play().catch(() => undefined);
+        } else {
+          portraitVideoRef.current?.pause();
+        }
       },
       { rootMargin: "25% 0px", threshold: 0 },
     );
 
     updateProgress();
+    section.dataset.nearViewport = "true";
     visibilityObserver.observe(section);
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
@@ -112,6 +120,7 @@ export default function HomeAboutIntro() {
       window.removeEventListener("resize", requestUpdate);
       reducedMotion.removeEventListener("change", requestUpdate);
       visibilityObserver.disconnect();
+      section.removeAttribute("data-near-viewport");
       if (frame !== 0) window.cancelAnimationFrame(frame);
       section.removeAttribute("data-scroll-reveal");
       [
@@ -167,6 +176,7 @@ export default function HomeAboutIntro() {
                 onPointerLeave={resetPortrait}
               >
                 <video
+                  ref={portraitVideoRef}
                   src={withBasePath("/about-photography/Home-X.mp4")}
                   autoPlay
                   muted
