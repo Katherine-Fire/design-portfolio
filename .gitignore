@@ -57,3 +57,6 @@ planet-1440x900.png
 .codex-dev.stdout.log
 
 /output/
+
+.codex-dev-3001.err.log
+.codex-dev-3001.log
