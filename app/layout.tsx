@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ParticleLoading from "@/components/ParticleLoading";
 import CustomCursor from "@/components/CustomCursor";
+import { withBasePath } from "@/lib/sitePath";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <link
           rel="preload"
-          href="/hero/hero-motion-web.mp4"
+          href={withBasePath("/hero/hero-motion-web.mp4")}
           as="video"
           type="video/mp4"
         />

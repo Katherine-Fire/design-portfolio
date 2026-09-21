@@ -2,7 +2,7 @@
   min-height: 100svh;
   color: var(--color-text-primary);
   background-color: var(--color-bg);
-  background-image: var(--resume-background-overlay), url("/resume/resume-background.png");
+  background-image: var(--resume-background-overlay), url("/cindykan-portfolio/resume/resume-background.png");
   background-position: center top;
   background-size: cover;
   background-attachment: fixed;

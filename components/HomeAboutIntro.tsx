@@ -6,6 +6,7 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { withBasePath } from "@/lib/sitePath";
 
 export default function HomeAboutIntro() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -154,7 +155,7 @@ export default function HomeAboutIntro() {
                 onPointerLeave={resetPortrait}
               >
                 <video
-                  src="/about-photography/Home-X.mp4"
+                  src={withBasePath("/about-photography/Home-X.mp4")}
                   autoPlay
                   muted
                   loop

@@ -3,12 +3,13 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import ThemeToggle from "./ThemeToggle";
+import { withBasePath } from "@/lib/sitePath";
 
 const menuItems = [
   { label: "HOME", href: "#hero" },
   { label: "SELECTED WORK", href: "#work" },
   { label: "ABOUT", href: "#about" },
-  { label: "RESUME", href: "/resume" },
+  { label: "RESUME", href: withBasePath("/resume") },
   { label: "CONTACT", href: "#contact" },
 ] as const;
 

@@ -5,9 +5,10 @@ import { motion, type MotionStyle, type MotionValue } from "framer-motion";
 import type { ReactNode } from "react";
 
 import type { HeroMotionValues } from "@/components/HeroMotion";
+import { withBasePath } from "@/lib/sitePath";
 
-const FRAME_01 = "/hero/frame-01-origin.webp";
-const FRAME_02 = "/hero/frame-02-origin.webp";
+const FRAME_01 = withBasePath("/hero/frame-01-origin.webp");
+const FRAME_02 = withBasePath("/hero/frame-02-origin.webp");
 
 type HeroSceneProps = Pick<
   HeroMotionValues,

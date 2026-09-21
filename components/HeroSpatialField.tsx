@@ -4,8 +4,9 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { withBasePath } from "@/lib/sitePath";
 
-const HERO_VIDEO_URL = "/hero/hero-motion-web.mp4";
+const HERO_VIDEO_URL = withBasePath("/hero/hero-motion-web.mp4");
 const HERO_TEXTURE_POSITION_X = 0.5;
 const HERO_TEXTURE_POSITION_Y = 0.5;
 const HERO_PLANE_OVERSCAN = 1.18;
@@ -340,7 +341,7 @@ export default function HeroSpatialField() {
         <Image
           key={motionPreference === "reduce" || videoFailed ? "fallback" : "underlay"}
           className="hero-spatial-fallback-image"
-          src="/hero/hero-bg.jpg"
+          src={withBasePath("/hero/hero-bg.jpg")}
           alt=""
           fill
           priority

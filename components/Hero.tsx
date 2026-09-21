@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { withBasePath } from "@/lib/sitePath";
 
 import HeroMenu from "./HeroMenu";
 import HeroSpatialField from "./HeroSpatialField";
@@ -158,7 +159,7 @@ export default function Hero() {
 
           <nav className="hero-nav-links" aria-label="Primary navigation">
             <a href="#work">WORK</a>
-            <a href="/resume">RESUME</a>
+            <a href={withBasePath("/resume")}>RESUME</a>
             <a href="#contact">CONTACT</a>
           </nav>
         </div>

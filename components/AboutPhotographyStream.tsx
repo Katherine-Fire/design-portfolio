@@ -11,6 +11,7 @@ import {
   aboutPhotography,
   type AboutPhotographyItem,
 } from "@/data/aboutPhotography";
+import { withBasePath } from "@/lib/sitePath";
 
 type PhotoRowProps = {
   photos: AboutPhotographyItem[];
@@ -358,7 +359,7 @@ export default function AboutPhotographyStream() {
         <div className="about-memory-scene" aria-hidden="true">
           <Image
             className="about-story-hero-bg-video"
-            src="/about-photography/about-orbital-background.png"
+            src={withBasePath("/about-photography/about-orbital-background.png")}
             alt=""
             fill
             sizes="100vw"

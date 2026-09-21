@@ -1,3 +1,5 @@
+import { withBasePath } from "@/lib/sitePath";
+
 export type AboutPhotographyItem = {
   id: string;
   type: "image" | "video";
@@ -6,7 +8,7 @@ export type AboutPhotographyItem = {
   tone: "light" | "soft" | "mid" | "deep";
 };
 
-export const aboutPhotography: AboutPhotographyItem[] = [
+const aboutPhotographyData: AboutPhotographyItem[] = [
   {
     id: "03",
     type: "image",
@@ -123,3 +125,8 @@ export const aboutPhotography: AboutPhotographyItem[] = [
     tone: "deep",
   },
 ];
+
+export const aboutPhotography: AboutPhotographyItem[] = aboutPhotographyData.map((photo) => ({
+  ...photo,
+  src: photo.src ? withBasePath(photo.src) : null,
+}));

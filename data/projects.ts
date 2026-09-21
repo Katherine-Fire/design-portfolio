@@ -1,3 +1,5 @@
+import { withBasePath } from "@/lib/sitePath";
+
 export type Project = {
     slug: string;
     titleZh: string;
@@ -21,7 +23,7 @@ export type ProjectContent =
         src: string;
     };
 
-export const projects: Project[] = [
+const projectData: Project[] = [
     {//project A 通讯流
         slug: "ai-communication",
         titleZh: "AI 助手体验升级",
@@ -168,3 +170,12 @@ export const projects: Project[] = [
         ],
     },
 ];
+
+export const projects: Project[] = projectData.map((project) => ({
+    ...project,
+    cover: withBasePath(project.cover),
+    content: project.content.map((item) => ({
+        ...item,
+        src: withBasePath(item.src),
+    })),
+}));

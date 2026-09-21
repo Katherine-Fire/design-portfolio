@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { projects as portfolioProjects } from "@/data/projects";
+import { withBasePath } from "@/lib/sitePath";
 import styles from "./resume.module.css";
 
 const navItems = [
@@ -214,7 +215,7 @@ export default function ResumeContent() {
 
             <a
               className={styles.download}
-              href="/resume.pdf"
+              href={withBasePath("/resume.pdf")}
               download="Cindy-Kan-Resume.pdf"
             >
               DOWNLOAD RESUME PDF

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { withBasePath } from "@/lib/sitePath";
 
 const profileCards = [
   {
@@ -7,7 +8,7 @@ const profileCards = [
     title: "想清楚，再动手",
     detail: "体验 · 结构 · 细节",
     modifier: "work",
-    visual: "/about-cards/work.png",
+    visual: withBasePath("/about-cards/work.png"),
   },
   {
     number: "02",
@@ -15,7 +16,7 @@ const profileCards = [
     title: "人与 AI，如何更自然地互动",
     detail: "探索 · 交互 · 数字体验",
     modifier: "focus",
-    visual: "/about-cards/focus.png",
+    visual: withBasePath("/about-cards/focus.png"),
   },
   {
     number: "03",
@@ -23,7 +24,7 @@ const profileCards = [
     title: "对世界保持好奇",
     detail: "科幻 · 旅行 · 阅读",
     modifier: "beyond",
-    visual: "/about-cards/beyond.png",
+    visual: withBasePath("/about-cards/beyond.png"),
   },
   {
     number: "04",
@@ -31,7 +32,7 @@ const profileCards = [
     title: "让想法真正发生",
     detail: "设计 · 构建 · 学习",
     modifier: "practice",
-    visual: "/about-cards/practice.png",
+    visual: withBasePath("/about-cards/practice.png"),
   },
 ];
 

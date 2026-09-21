@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { withBasePath } from "@/lib/sitePath";
 
 const LOADER_TIMING = {
   minimumVisibleMs: 900,
@@ -135,7 +136,7 @@ export default function ParticleLoading() {
       <iframe
         ref={frameRef}
         className="portfolio-loader-frame"
-        src="/particle-loading.html?mode=loader"
+        src={withBasePath("/particle-loading.html?mode=loader")}
         title="Interactive particle loading animation"
         tabIndex={-1}
         aria-hidden="true"
